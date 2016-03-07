@@ -8,23 +8,23 @@ namespace Brilliantech.ClearInsight.Framework.Lamp
 {
     public class LampUtil
     {
-        //[DllImport("ThridPart\\QUvc_dll.dll")]
-        //public static extern void Usb_Qu_Open();
-        //[DllImport("ThridPart\\QUvc_dll.dll")]
-        //public static extern void Usb_Qu_Close();
-        //[DllImport("ThridPart\\QUvc_dll.dll")]
-        //public static unsafe extern bool Usb_Qu_write(byte Q_index, byte Q_type, byte* pQ_data);
-        //[DllImport("ThridPart\\QUvc_dll.dll")]
-        //public static extern int Usb_Qu_Getstate();
-
-        [DllImport("ThridPart\\Ux64_dllc.dll")]
+        [DllImport("ThridPart\\QUvc_dll.dll")]
         public static extern void Usb_Qu_Open();
-        [DllImport("ThridPart\\Ux64_dllc.dll")]
+        [DllImport("ThridPart\\QUvc_dll.dll")]
         public static extern void Usb_Qu_Close();
-        [DllImport("ThridPart\\Ux64_dllc.dll")]
+        [DllImport("ThridPart\\QUvc_dll.dll")]
         public static unsafe extern bool Usb_Qu_write(byte Q_index, byte Q_type, byte* pQ_data);
-        [DllImport("ThridPart\\Ux64_dllc.dll")]
+        [DllImport("ThridPart\\QUvc_dll.dll")]
         public static extern int Usb_Qu_Getstate();
+
+        //[DllImport("ThridPart\\Ux64_dllc.dll")]
+        //public static extern void Usb_Qu_Open();
+        //[DllImport("ThridPart\\Ux64_dllc.dll")]
+        //public static extern void Usb_Qu_Close();
+        //[DllImport("ThridPart\\Ux64_dllc.dll")]
+        //public static unsafe extern bool Usb_Qu_write(byte Q_index, byte Q_type, byte* pQ_data);
+        //[DllImport("ThridPart\\Ux64_dllc.dll")]
+        //public static extern int Usb_Qu_Getstate();
 
 
         /// <summary>
