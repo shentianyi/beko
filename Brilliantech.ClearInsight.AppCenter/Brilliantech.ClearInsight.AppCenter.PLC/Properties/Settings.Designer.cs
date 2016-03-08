@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Brilliantech.ClearInsight.AppCenter.Kanban.Properties {
+namespace Brilliantech.ClearInsight.AppCenter.PLC.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
