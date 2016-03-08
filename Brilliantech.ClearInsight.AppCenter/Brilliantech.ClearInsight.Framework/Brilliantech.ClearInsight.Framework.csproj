@@ -49,6 +49,7 @@
     <Compile Include="API\ApiClient.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Config\ApiConfig.cs" />
+    <Compile Include="Config\BaseConfig.cs" />
     <Compile Include="Lamp\LampUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -62,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Ini\api.ini" />
+    <None Include="Ini\base.ini" />
     <None Include="ThridPart\Quvc_dll.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

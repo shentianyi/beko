@@ -108,6 +108,10 @@
       <Project>{9B5F850A-5136-4095-8955-6C4F7747C48A}</Project>
       <Name>Brilliantech.Framwork</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Brilliantech.ClearInsight.Framework\Brilliantech.ClearInsight.Framework.csproj">
+      <Project>{05D45087-60E1-4229-8C10-CC2549ECFA77}</Project>
+      <Name>Brilliantech.ClearInsight.Framework</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

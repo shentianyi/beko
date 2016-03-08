@@ -45,7 +45,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Properties.Settings.Default.FXType.Equals("3U"))
+            if (BaseConfig.FXType.Equals("3U"))
             {
                 RETURN_DATA_LENGTH = 16;
                 CONTROLS = 48;
@@ -55,7 +55,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 {0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37 }, 
                 { 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57} };
             }
-            else if (Properties.Settings.Default.FXType.Equals("1N"))
+            else if (BaseConfig.FXType.Equals("1N"))
             {
                 RETURN_DATA_LENGTH = 8;
                 CONTROLS = 16;
@@ -90,7 +90,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             timer = new System.Timers.Timer();
             ((System.ComponentModel.ISupportInitialize)(this.timer)).BeginInit();
             timer.Enabled = false;
-            timer.Interval = 500;
+            timer.Interval = BaseConfig.COMTimerInterval;
             timer.Elapsed += new System.Timers.ElapsedEventHandler(Timer_Elapsed);
             ((System.ComponentModel.ISupportInitialize)(this.timer)).EndInit();
         }
@@ -101,9 +101,9 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             if (sp == null)
             {
                 sp = new SerialPort(BaseConfig.COM, BaseConfig.BaudRate);
-                sp.Parity = Parity.Even;
-                sp.DataBits = 7;
-                sp.StopBits = StopBits.One;
+                sp.Parity = BaseConfig.Parity;
+                sp.DataBits = BaseConfig.DataBits;
+                sp.StopBits = BaseConfig.StopBits;
 
 
                 if (!sp.IsOpen)
@@ -151,7 +151,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                        byte[] ons= getOnOffState(data);
                        for (int i = 0; i < ons.Length; i++) {
                            if (ons[i] == 1) {
-                               timeRecords[i] =timeRecords[i]+ 500;
+                               timeRecords[i] = timeRecords[i] + BaseConfig.COMTimerInterval;
                            }
                        }
                     }
@@ -163,11 +163,14 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                         {
                             if (old_ons[i] == 1 && new_offs[i] == 0)
                             {
+
+                                // #TODO 发送数据，多个发送
+
+                                // 重置计时
                                 timeRecords[i] = 0;
-                                // #TODO 发送数据
                             }
                             else if(old_ons[i]==1 && new_offs[i]==1){
-                                timeRecords[i] = timeRecords[i] + 500;
+                                timeRecords[i] = timeRecords[i] + BaseConfig.COMTimerInterval;
                             }
                         }
                         lastRecord = data;
@@ -215,11 +218,11 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             byte[] cmd = null;
-            if (Properties.Settings.Default.FXType.Equals("3U"))
+            if (BaseConfig.FXType.Equals("3U"))
             {
                 cmd = new byte[] { 0x02, 0x30, 0x31, 0x30, 0x43, 0x38, 0x30, 0x36, 0x03, 0x37, 0x35 };
             }
-            else if (Properties.Settings.Default.FXType.Equals("1N")) 
+            else if (BaseConfig.FXType.Equals("1N")) 
             {
                 cmd = new byte[] { 0x02, 0x30, 0x31, 0x30, 0x43, 0x38, 0x30, 0x32, 0x03, 0x33, 0x35 };
             }
