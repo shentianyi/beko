@@ -26,6 +26,7 @@ namespace Brilliantech.ClearInsight.Framework.Config
                 StopBits = (StopBits)int.Parse(config.Get("StopBits"));
 
                 COMTimerInterval = int.Parse(config.Get("COMTimerInterval"));
+                KanbanTimerInterval =  int.Parse(config.Get("KanbanTimerInterval"));
 
             }
             catch (Exception e)
@@ -43,6 +44,6 @@ namespace Brilliantech.ClearInsight.Framework.Config
         public static StopBits StopBits { get; set; }
 
         public static int COMTimerInterval { get; set; }
-
+        public static int KanbanTimerInterval { get; set; }
     }
 }

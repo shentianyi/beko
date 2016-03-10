@@ -37,42 +37,64 @@ namespace Brilliantech.ClearInsight.Framework.Lamp
         {
             try
             {
+                const byte C_lampoff = 0;
+                const byte C_lampon = 1;
+                const byte C_lampblink = 2;
+                const byte C_D_not = 100;  //  // Don't care  // Do not change before state
+           
+ 
                 byte* bbb = stackalloc byte[6];
 
                 byte CS = (byte)(blink ? 2 : 1);
 
-                bbb[0] = CS;
-                bbb[1] = CS;
-                bbb[2] = CS;
-                bbb[3] = CS;
-                bbb[4] = CS;
+                bbb[0] = C_lampblink;
+                bbb[1] = C_lampoff;
 
-                bbb[5] = sound;
+                bbb[2] = C_lampoff;
+
+                bbb[3] = C_lampoff;
+                bbb[4] = C_lampoff;
+
+                bbb[5] = 1;
 
                 return Usb_Qu_write(0, 0, bbb);
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 Console.Write(e.Message);
             }
             return false;
         }
 
-        unsafe public static bool TurnOff() {
+        unsafe public static bool TurnOff()
+        {
 
-            const byte C_lampoff = 0;
+            try
+            {
+                const byte C_lampoff = 0;
+                const byte C_lampon = 1;
+                const byte C_lampblink = 2;
+                const byte C_D_not = 100;  //  // Don't care  // Do not change before state
+           
+ 
 
-            byte* bbb = stackalloc byte[6];
+                byte* bbb = stackalloc byte[6]; 
 
+                bbb[0] = C_lampoff;
+                bbb[1] = C_lampoff;
+                bbb[2] = C_lampon;
+                bbb[3] = C_lampoff;
+                bbb[4] = C_lampoff;
 
-            bbb[0] = C_lampoff;
-            bbb[1] = C_lampoff;
-            bbb[2] = C_lampoff;
-            bbb[3] = C_lampoff;
-            bbb[4] = C_lampoff;
+                bbb[5] = 0;
 
-            bbb[5] = 0;
-
-            return Usb_Qu_write(0, 0, bbb);
+                return Usb_Qu_write(0, 0, bbb);
+            }
+            catch (Exception e)
+            {
+                Console.Write(e.Message);
+            }
+            return false;
         }
     }
 }

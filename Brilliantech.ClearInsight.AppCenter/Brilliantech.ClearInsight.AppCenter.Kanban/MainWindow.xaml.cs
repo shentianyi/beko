@@ -13,7 +13,14 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.IO.Ports; 
+using System.IO.Ports;
+using Brilliantech.ClearInsight.Framework;
+using Brilliantech.ClearInsight.Framework.Model;
+using ScmWcfService.Model.Message;
+using Brilliantech.ClearInsight.Framework.Lamp;
+using System.Windows.Threading;
+using System.Windows.Forms;
+using Brilliantech.ClearInsight.Framework.Config; 
 
 namespace Brilliantech.ClearInsight.AppCenter.Kanban
 {
@@ -23,83 +30,153 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
     public partial class MainWindow : Window
     {
         private System.Windows.Threading.DispatcherTimer currenttime;
+
+
+        private System.Timers.Timer timer;
+        
+
+        List<int> ids = new List<int>();
+        List<string> productLines = new List<string>();
+
+        int currentProductIndex = 0;
+        bool locked=false;
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        CollectionViewSource viewtable = new CollectionViewSource();
+        ObservableCollection<ProductionPlan> tables = new ObservableCollection<ProductionPlan>();
+
+        private SolidColorBrush hightlightBrush = new SolidColorBrush(Colors.Red);
+        static Color CellColor = Color.FromArgb(255, 64, 74, 86);
+        private SolidColorBrush okBrush = new SolidColorBrush(Colors.Green);
+
+        private SolidColorBrush normalBrush = new SolidColorBrush(CellColor);
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            productLines = Properties.Settings.Default.ProductLines.Split(',').ToList();
+
+            initPage();
 
             currenttime = new System.Windows.Threading.DispatcherTimer();
             currenttime.Tick += new EventHandler(ShowCurrentTime);
             currenttime.Interval = new TimeSpan(0, 0, 0, 1);
             currenttime.Start();
+
+
+
+            timer = new System.Timers.Timer();
+            ((System.ComponentModel.ISupportInitialize)(this.timer)).BeginInit();
+            timer.Enabled = false;
+            timer.Interval =BaseConfig.KanbanTimerInterval;
+            timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
+
+            ((System.ComponentModel.ISupportInitialize)(this.timer)).EndInit();
+            timer.Start();
+
         }
-
-        CollectionViewSource viewtable = new CollectionViewSource();
-        ObservableCollection<table> tables = new ObservableCollection<table>();
-
-        private SolidColorBrush hightlightBrush = new SolidColorBrush(Colors.Red);
-        static Color CellColor = Color.FromArgb(255, 64, 74, 86);
-        private SolidColorBrush normarlBrush = new SolidColorBrush(CellColor);
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            tables.Add(new table()
+        private void initPage() {
+            if (!locked)
             {
-                Assembly = "T-1",
-                Prod_Line = "PL-1",
-                Planned = "50",
-                Produced = "50",
-                Rest = "0",
-                Status = "OK"
-            });
+                productNameLabel.Content = productLines[currentProductIndex];
+                // to do change index
+                tables = null;
+                tables = getPlan();
+                if (tables.Count > 0)
+                {
+                    viewtable.Source = null;
+                    viewtable.Source = tables;
 
-            tables.Add(new table()
-            {
-                Assembly = "T-2",
-                Prod_Line = "PL-2",
-                Planned = "40",
-                Produced = "23",
-                Rest = "17",
-                Status = "Ongoing"
-            });
+                    this.gridProducts.DataContext = null;
 
-            tables.Add(new table()
-            {
-                Assembly = "T-3",
-                Prod_Line = "PL-1",
-                Planned = "50",
-                Produced = "0",
-                Rest = "50",
-                Status = "ALARM"
-            });
-
-            tables.Add(new table()
-            {
-                Assembly = "T-4",
-                Prod_Line = "PL-2",
-                Planned = "50",
-                Produced = "0",
-                Rest = "50",
-                Status = "Standby"
-            });
-            viewtable.Source = tables;
-            this.gridProducts.DataContext = viewtable;
+                    this.gridProducts.DataContext = viewtable;
+                }
+            }
         }
+        private ObservableCollection<ProductionPlan> getPlan() {
+            ObservableCollection<ProductionPlan> bplans = new ObservableCollection<ProductionPlan>();
 
+            try
+            {
+                AppService app = new AppService();
+                ResponseMessage<List<ProductionPlan>> plans = app.GetPlans(productLines[currentProductIndex], DateTime.Today.ToShortDateString());
+
+                if (plans.data.Count > 0)
+                {
+                    foreach (var p in plans.data)
+                    {
+                        bplans.Add(p);
+                    }
+                }
+            }
+            catch (Exception ex) {
+            
+            }
+            return bplans;
+        }
         private void Grid_Row_Color(object sender, DataGridRowEventArgs e)
         {
-            table products = (table)e.Row.DataContext;
+            ProductionPlan products = (ProductionPlan)e.Row.DataContext;
             Storyboard colorboard = new Storyboard();
-            if (products.Status.Equals("ALARM"))
+            if (products.Status.Equals("警报"))
             {
                 e.Row.Background = hightlightBrush;
 
+                // this.Dispatcher.Invoke(DispatcherPriority.Normal, (MethodInvoker)delegate()
+                //{
+                locked = true;
 
+                LampUtil.TurnOn();
+                ids.Add(products.Id);
+                //});
+            }
+            else if (products.Status.Equals("生产完")) {
+
+                e.Row.Background = okBrush;
             }
             else
             {
-                e.Row.Background = normarlBrush;
+              e.Row.Background = normalBrush;
             }
         }
+
+        private void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            // test push devise
+            if (e.Key.Equals(Key.X))
+            {
+                //this.Dispatcher.Invoke(DispatcherPriority.Normal, (MethodInvoker)delegate()
+                //{
+                    LampUtil.TurnOff();
+                    locked = false;
+                //});
+                    AppService app = new AppService();
+                    if (ids.Count > 0)
+                    {
+                        app.ConfirmPlans(ids);
+                        initPage();
+                    }           
+            }
+            //  KeyLabel.Content = e.Key;
+        }
+
+
+        private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (!locked) 
+            {
+                currentProductIndex += 1;
+                currentProductIndex = (currentProductIndex % productLines.Count);
+                 this.Dispatcher.Invoke(DispatcherPriority.Normal, (MethodInvoker)delegate()
+                {
+                  initPage();
+                });
+            }
+        }
+
         public void ShowCurrentTime(object sender, EventArgs e)
         {
             //获得星期

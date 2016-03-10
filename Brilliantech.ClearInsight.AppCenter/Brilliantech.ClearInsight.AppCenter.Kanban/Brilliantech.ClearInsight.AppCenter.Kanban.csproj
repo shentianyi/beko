@@ -39,6 +39,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -97,6 +98,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Brilliantech.ClearInsight.Framework\Brilliantech.ClearInsight.Framework.csproj">
+      <Project>{05D45087-60E1-4229-8C10-CC2549ECFA77}</Project>
+      <Name>Brilliantech.ClearInsight.Framework</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -22,5 +22,17 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("P1,P2,P3")]
+        public string ProductLines {
+            get {
+                return ((string)(this["ProductLines"]));
+            }
+            set {
+                this["ProductLines"] = value;
+            }
+        }
     }
 }

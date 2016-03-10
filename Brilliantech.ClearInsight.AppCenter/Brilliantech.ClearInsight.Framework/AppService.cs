@@ -69,5 +69,33 @@ namespace Brilliantech.ClearInsight.Framework
 
             return msg;
         }
+
+        public ResponseMessage<object> ConfirmPlans(List<int> ids)
+        {
+            var msg = new ResponseMessage<object>();
+            try
+            {
+                var client = new ApiClient();
+                var req = client.GenRequest(ApiConfig.ConfirmPlanAction, Method.POST);
+
+                req.AddParameter("ids", string.Join(",", ids.ToArray()));
+
+                var res = client.Execute(req);
+
+                msg = JsonUtil.parse<ResponseMessage<object>>(res.Content);
+            }
+            catch (WebFaultException<string> e)
+            {
+                msg.http_error = true;
+                msg.meta.error_message = e.Detail;
+            }
+            catch (Exception e)
+            {
+                msg.http_error = true;
+                msg.meta.error_message = "系统服务错误，请联系管理员";
+            }
+
+            return msg;
+        }
     }
 }

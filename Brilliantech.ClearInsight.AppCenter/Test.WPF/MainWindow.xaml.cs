@@ -28,7 +28,8 @@ namespace Test.WPF
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
             // test push devise
-            if (e.Key.Equals(Key.X)) {
+            if (e.Key.Equals(Key.X))
+            {
                 LampUtil.TurnOff();
             }
             KeyLabel.Content = e.Key;
@@ -38,6 +39,7 @@ namespace Test.WPF
         {
             LampUtil.TurnOn();
         }
+
 
         private void TurnOff_Click(object sender, RoutedEventArgs e)
         {

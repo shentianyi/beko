@@ -26,6 +26,7 @@ namespace Brilliantech.ClearInsight.Framework.Config
                 //AutoToken = bool.Parse(config.Get("AutoToken"));
                 PlcPostAction = config.Get("PlcPostAction");
                 PlanAction = config.Get("PlanAction");
+                ConfirmPlanAction = config.Get("ConfirmPlanAction");
                 //GetOrderCarByNrAction = config.Get("GetOrderCarByNrAction");
                 //GetOrderBoxByNrAction = config.Get("GetOrderBoxByNrAction");
                 //GetOrderBoxByNrsAction = config.Get("GetOrderBoxByNrsAction");
@@ -68,7 +69,7 @@ namespace Brilliantech.ClearInsight.Framework.Config
         public static string PlcPostAction { get; set; }
         //public static bool AutoToken { get; set; }
         public static string PlanAction { get; set; }
-        //public static string GetOrderBoxByNrAction { get; set; }
+        public static string ConfirmPlanAction { get; set; }
         //public static string GetOrderBoxByNrsAction { get; set; }
         //public static string CreatePickByCarAction { get; set; }
         //public static string MoveStorageByCarAction { get; set; }

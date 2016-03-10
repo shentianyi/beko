@@ -7,14 +7,16 @@ using System.Runtime.Serialization;
 namespace Brilliantech.ClearInsight.Framework.Model
 {
     [DataContract]
-   public class ProductionPlan
+    public class ProductionPlan
     {
+        [DataMember]
+        public int Id { get; set; }
 
         [DataMember]
         public string Assembly { get; set; }
 
         [DataMember]
-        public string Product_Line { get; set; }
+        public string Prod_Line { get; set; }
 
         [DataMember]
         public int Planned { get; set; }
@@ -25,8 +27,7 @@ namespace Brilliantech.ClearInsight.Framework.Model
         [DataMember]
         public int Rest
         {
-            get;
-            set;
+            get; set;
         }
 
         [DataMember]
