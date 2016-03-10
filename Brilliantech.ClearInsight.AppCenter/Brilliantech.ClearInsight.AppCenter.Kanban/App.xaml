@@ -3,6 +3,56 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style x:Key="contentCenterStyle"  
+               TargetType="{x:Type TextBlock}">
+            <Setter Property="HorizontalAlignment"  
+                    Value="Center" />
+            <Setter Property="Margin"  
+                    Value="0 45 0 0" />
+            <Setter Property="Height"  
+                    Value="90" />
+            <Setter Property="FontSize" Value="35"></Setter>
+            <Setter Property="Foreground" Value="White"></Setter>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Height" Value="90"/>
+            <Setter Property="FontSize" Value="40" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridColumnHeader">
+                        <Border x:Name="BackgroundBorder" CornerRadius="20 20 0 0">
+                            <Grid HorizontalAlignment="Center" Background="#5a5a5a" >
+                                <ContentPresenter  Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <Path x:Name="SortArrow" Visibility="Collapsed" Data="M0,0 L1,0 0.5,1 z" Stretch="Fill"  Grid.Column="2" Width="8" Height="6" Fill="White" Margin="0,0,50,0" 
+                            VerticalAlignment="Center" RenderTransformOrigin="1,1"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="Transparent"></Setter>
+                    <Setter Property="BorderThickness" Value="0"></Setter>
+                </Trigger>
+
+                <!--<EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard BeginTime="0:0:0" AutoReverse="True" RepeatBehavior="Forever">
+                            <ColorAnimation From="Red" To="Gray" RepeatBehavior="Forever" Storyboard.TargetProperty="Background.Color"></ColorAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>-->
+            </Style.Triggers>
+        </Style>
     </Application.Resources>
 </Application>
