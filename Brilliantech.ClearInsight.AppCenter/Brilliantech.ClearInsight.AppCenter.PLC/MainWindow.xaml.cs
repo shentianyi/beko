@@ -36,7 +36,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         private static int CONTROLS = 0;
 
 
-        private static byte[] merix;
+        private static string[] merix;
 
         private Dictionary<int, float> timeRecords = new Dictionary<int, float>();
         private byte[] lastRecord;
@@ -56,17 +56,14 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 RETURN_DATA_LENGTH = 16;
                 CONTROLS = 48;
                 RETURN_DATA_GROUP_LENGTH = 3;
-                merix = new byte[48] { 
-                  0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
-                0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37 , 
-                 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57 };
+                merix = new string[48] { "X0", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "X10", "X11", "X12", "X13", "X14", "X15", "X16", "X17", "X20", "X21", "X22", "X23", "X24", "X25", "X26", "X27", "X30", "X31", "X32", "X33", "X34", "X35", "X36", "X37 ", "X40", "X41", "X42", "X43", "X44", "X45", "X46", "X47", "X50", "X51", "X52", "X53", "X54", "X55", "X56", "X57" };
             }
             else if (BaseConfig.FXType.Equals("1N"))
             {
                 RETURN_DATA_LENGTH = 8;
                 CONTROLS = 16;
                 RETURN_DATA_GROUP_LENGTH = 1;
-                merix = new byte[16] { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17 };
+                merix = new string[16] { "X0", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "X10", "X11", "X12", "X13", "X14", "X15", "X16", "X17" };
             }
             else
             {
@@ -90,7 +87,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 if (openCom())
                 {
                     initTimer();
-                    //  timer.Start();
+                      timer.Start();
                 }
             }
         }
