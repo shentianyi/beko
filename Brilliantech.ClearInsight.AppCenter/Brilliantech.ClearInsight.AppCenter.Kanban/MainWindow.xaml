@@ -11,30 +11,27 @@
         </Grid.RowDefinitions>
 
         <Grid>
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-
-            <Label Grid.Column="1" FontSize="25" Margin="0 0 40 0" Foreground="White" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Label Grid.Column="1" FontSize="50" Margin="0 0 40 0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Right">
                 发货仓库
             </Label>
 
-            <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="40 0 0 0">
-                <Image Source="images/icon.png" Height="48"></Image>
-                <TextBlock Name="CurrentTime" FontSize="40" Foreground="White" Margin="20 0 0 0">2016-2-26 16:00</TextBlock>
-            </StackPanel>
-
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0 0 40 0">
-                <Label FontSize="25" Foreground="White">生产线:</Label>
-                <Label FontSize="25" Foreground="Green" Name="productNameLabel"></Label>
-            </StackPanel>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="40 0 0 0">
+                    <Image Source="images/icon.png" Height="48"></Image>
+                    <TextBlock Name="CurrentTime" FontSize="45" Foreground="White" Margin="20 0 0 0"></TextBlock>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Label FontSize="50" Foreground="White">生产线:</Label>
+                    <Label FontSize="50" Foreground="Green" Name="productNameLabel"></Label>
+                </StackPanel>
+            </Grid>
         </Grid>
 
         <Grid Grid.Row="1">

@@ -37,6 +37,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\..\ThridPart\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Nini">
+      <HintPath>..\..\ThridPart\Nini.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\..\ThridPart\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
@@ -100,6 +109,10 @@
     <Resource Include="images\icon.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Brilliantech.Framwork\Brilliantech.Framwork.csproj">
+      <Project>{9b5f850a-5136-4095-8955-6c4f7747c48a}</Project>
+      <Name>Brilliantech.Framwork</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Brilliantech.ClearInsight.Framework\Brilliantech.ClearInsight.Framework.csproj">
       <Project>{05D45087-60E1-4229-8C10-CC2549ECFA77}</Project>
       <Name>Brilliantech.ClearInsight.Framework</Name>

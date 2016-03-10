@@ -32,6 +32,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\..\ThridPart\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Nini">
+      <HintPath>..\..\ThridPart\Nini.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\..\ThridPart\RestSharp.dll</HintPath>
     </Reference>
