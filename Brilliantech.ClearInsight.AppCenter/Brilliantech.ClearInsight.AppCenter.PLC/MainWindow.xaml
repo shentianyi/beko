@@ -3,6 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid>
-        
+        <Label Content="PLC 数据采集,请勿关闭!" Height="69" 
+               HorizontalAlignment="Left" Margin="83,137,0,0" Name="label1"  FontSize="30"
+               VerticalAlignment="Top" Width="332" />
     </Grid>
 </Window>

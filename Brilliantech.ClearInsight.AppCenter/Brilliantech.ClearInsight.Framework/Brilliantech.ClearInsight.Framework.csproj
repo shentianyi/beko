@@ -37,8 +37,11 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,10 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\ApiClient.cs" />
-    <Compile Include="Class1.cs" />
+    <Compile Include="AppService.cs" />
     <Compile Include="Config\ApiConfig.cs" />
     <Compile Include="Config\BaseConfig.cs" />
     <Compile Include="Lamp\LampUtil.cs" />
+    <Compile Include="Model\ProductionPlan.cs" />
+    <Compile Include="Model\ResponseMessage.cs" />
+    <Compile Include="Model\ResponseMeta.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -62,8 +68,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Ini\api.ini" />
-    <None Include="Ini\base.ini" />
+    <None Include="Ini\api.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Ini\base.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="ThridPart\Quvc_dll.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

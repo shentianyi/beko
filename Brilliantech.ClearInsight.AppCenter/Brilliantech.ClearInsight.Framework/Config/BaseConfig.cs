@@ -15,7 +15,7 @@ namespace Brilliantech.ClearInsight.Framework.Config
         {
             try
             {
-                config = new ConfigUtil("RFID", "Ini/rfid.ini");
+                config = new ConfigUtil("Base", "Ini/base.ini");
 
                 FXType = config.Get("FXType");
 
