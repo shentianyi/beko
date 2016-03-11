@@ -50,20 +50,21 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         {
             //AppService app = new AppService();
             //ResponseMessage<List<ProductionPlan>> plans = app.GetPlans("P1", DateTime.Today.ToShortDateString());
+            merix = BaseConfig.Sensor;
 
             if (BaseConfig.FXType.Equals("3U"))
             {
                 RETURN_DATA_LENGTH = 16;
                 CONTROLS = 48;
                 RETURN_DATA_GROUP_LENGTH = 3;
-                merix = new string[48] { "X0", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "X10", "X11", "X12", "X13", "X14", "X15", "X16", "X17", "X20", "X21", "X22", "X23", "X24", "X25", "X26", "X27", "X30", "X31", "X32", "X33", "X34", "X35", "X36", "X37 ", "X40", "X41", "X42", "X43", "X44", "X45", "X46", "X47", "X50", "X51", "X52", "X53", "X54", "X55", "X56", "X57" };
+               // merix = new string[48] { "X0", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "X10", "X11", "X12", "X13", "X14", "X15", "X16", "X17", "X20", "X21", "X22", "X23", "X24", "X25", "X26", "X27", "X30", "X31", "X32", "X33", "X34", "X35", "X36", "X37 ", "X40", "X41", "X42", "X43", "X44", "X45", "X46", "X47", "X50", "X51", "X52", "X53", "X54", "X55", "X56", "X57" };
             }
             else if (BaseConfig.FXType.Equals("1N"))
             {
                 RETURN_DATA_LENGTH = 8;
                 CONTROLS = 16;
                 RETURN_DATA_GROUP_LENGTH = 1;
-                merix = new string[16] { "X0", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "X10", "X11", "X12", "X13", "X14", "X15", "X16", "X17" };
+               // merix = new string[16] { "X0", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "X10", "X11", "X12", "X13", "X14", "X15", "X16", "X17" };
             }
             else
             {
@@ -101,6 +102,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             ((System.ComponentModel.ISupportInitialize)(this.timer)).EndInit();
         }
 
+        int openCount = 0;
 
         bool openCom()
         {
@@ -120,12 +122,18 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
                         sp.DataReceived += new SerialDataReceivedEventHandler(sp_DataReceived);
                         LogUtil.Logger.Info("OpenCom Success");
+
+                        openCount = 0;
                         return true;
                     }
                     catch (Exception ex)
                     {
                         LogUtil.Logger.Error("OpenCom Error");
                         LogUtil.Logger.Error(ex.Message);
+                        openCount++;
+                        if (openCount < 5) {
+                            openCom();
+                        }
                         return false;
                     }
                 }
@@ -252,22 +260,38 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         /// <param name="e"></param>
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            byte[] cmd = null;
-            if (BaseConfig.FXType.Equals("3U"))
+            try
             {
-                cmd = new byte[] { 0x02, 0x30, 0x31, 0x30, 0x43, 0x38, 0x30, 0x36, 0x03, 0x37, 0x35 };
+                if (sp == null || (sp.IsOpen==false)) {
+                    openCom();
+                }
+                byte[] cmd = null;
+                if (BaseConfig.FXType.Equals("3U"))
+                {
+                    cmd = new byte[] { 0x02, 0x30, 0x31, 0x30, 0x43, 0x38, 0x30, 0x36, 0x03, 0x37, 0x35 };
+                }
+                else if (BaseConfig.FXType.Equals("1N"))
+                {
+                    cmd = new byte[] { 0x02, 0x30, 0x31, 0x30, 0x43, 0x38, 0x30, 0x32, 0x03, 0x37, 0x31 };
+                }
+                if (cmd != null)
+                {
+                    sp.Write(cmd, 0, cmd.Length);
+                    LogUtil.Logger.Info("[Send CMD]" + ToHexString(cmd));
+                }
+                else
+                {
+                    LogUtil.Logger.Error("Not Set FUType");
+                }
             }
-            else if (BaseConfig.FXType.Equals("1N")) 
-            {
-                cmd = new byte[] { 0x02, 0x30, 0x31, 0x30, 0x43, 0x38, 0x30, 0x32, 0x03, 0x33, 0x35 };
-            }
-            if (cmd != null)
-            {
-                sp.Write(cmd, 0, cmd.Length);
-                LogUtil.Logger.Info("[Send CMD]" + ToHexString(cmd));
-            }
-            else {
-                LogUtil.Logger.Error("Not Set FUType");
+            catch (Exception ex) {
+                if (openCount < 5) {
+                    openCom();
+                }
+
+                LogUtil.Logger.Error("Send Com Data Error");
+                LogUtil.Logger.Error(ex.Message);
+
             }
         }
 

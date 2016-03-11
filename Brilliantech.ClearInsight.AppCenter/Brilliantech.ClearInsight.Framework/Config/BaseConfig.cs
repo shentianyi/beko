@@ -18,7 +18,7 @@ namespace Brilliantech.ClearInsight.Framework.Config
                 config = new ConfigUtil("Base", "Ini/base.ini");
 
                 FXType = config.Get("FXType");
-
+                Sensor = config.Get("Sensor").Split(',');
                 COM = config.Get("COM");
                 BaudRate = int.Parse(config.Get("BaudRate"));
                 Parity = (Parity)int.Parse(config.Get("Parity"));
@@ -36,6 +36,7 @@ namespace Brilliantech.ClearInsight.Framework.Config
         }
 
         public static string FXType { get; set; }
+        public static string[] Sensor { get; set; }
 
         public static string COM { get; set; }
         public static int BaudRate { get; set; }
