@@ -30,7 +30,7 @@ namespace Test.WPF
             // test push devise
             if (e.Key.Equals(Key.X))
             {
-                LampUtil.TurnOff();
+                LampUtil.TurnNormal();
             }
             KeyLabel.Content = e.Key;
         }
@@ -43,7 +43,7 @@ namespace Test.WPF
 
         private void TurnOff_Click(object sender, RoutedEventArgs e)
         {
-            LampUtil.TurnOff();
+            LampUtil.TurnNormal();
         }
     }
 }

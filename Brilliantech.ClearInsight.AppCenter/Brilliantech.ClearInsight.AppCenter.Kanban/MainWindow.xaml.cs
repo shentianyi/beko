@@ -77,16 +77,18 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
             ((System.ComponentModel.ISupportInitialize)(this.timer)).EndInit();
             timer.Start();
 
+
+            LampUtil.TurnNormal();
         }
         private void initPage() {
             if (!locked)
             {
-                productNameLabel.Content = productLines[currentProductIndex];
                 // to do change index
                 tables = null;
                 tables = getPlan();
                 if (tables.Count > 0)
                 {
+                    productNameLabel.Content = productLines[currentProductIndex];
                     viewtable.Source = null;
                     viewtable.Source = tables;
 
@@ -150,7 +152,7 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
             {
                 //this.Dispatcher.Invoke(DispatcherPriority.Normal, (MethodInvoker)delegate()
                 //{
-                    LampUtil.TurnOff();
+                    LampUtil.TurnNormal();
                     locked = false;
                 //});
                     AppService app = new AppService();
@@ -166,14 +168,17 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
 
         private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (!locked) 
+            if (!locked)
             {
                 currentProductIndex += 1;
                 currentProductIndex = (currentProductIndex % productLines.Count);
-                 this.Dispatcher.Invoke(DispatcherPriority.Normal, (MethodInvoker)delegate()
-                {
-                  initPage();
-                });
+                this.Dispatcher.Invoke(DispatcherPriority.Normal, (MethodInvoker)delegate()
+               {
+                   initPage();
+               });
+            }
+            else { 
+              
             }
         }
 

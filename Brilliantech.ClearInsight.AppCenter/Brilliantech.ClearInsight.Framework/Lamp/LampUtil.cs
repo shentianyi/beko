@@ -66,7 +66,7 @@ namespace Brilliantech.ClearInsight.Framework.Lamp
             return false;
         }
 
-        unsafe public static bool TurnOff()
+        unsafe public static bool TurnNormal()
         {
 
             try
