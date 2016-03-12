@@ -189,5 +189,20 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
             this.CurrentTime.Text += DateTime.Now.ToString("HH:mm:ss");
         }
 
+        private void test_btn_Checked(object sender, RoutedEventArgs e)
+        {
+            try {
+                show_test_ch.Visibility = Visibility.Visible;
+                show_test_en.Visibility = Visibility.Visible;
+            }catch(Exception ex)
+            {
+            }
+        }
+
+        private void test_btn_Unchecked(object sender, RoutedEventArgs e)
+        {
+            show_test_ch.Visibility = Visibility.Hidden;
+            show_test_en.Visibility = Visibility.Hidden;
+        }
     }
 }
