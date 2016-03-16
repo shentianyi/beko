@@ -18,6 +18,8 @@ using Brilliantech.ClearInsight.Framework.Config;
 using Brilliantech.ClearInsight.Framework;
 using Brilliantech.ClearInsight.Framework.Model;
 using ScmWcfService.Model.Message;
+using System.Windows.Threading;
+using System.IO;
 
 namespace Brilliantech.ClearInsight.AppCenter.PLC
 {
@@ -40,6 +42,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
         private Dictionary<int, float> timeRecords = new Dictionary<int, float>();
         private byte[] lastRecord;
+
 
         public MainWindow()
         {
@@ -87,10 +90,11 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
                 if (openCom())
                 {
-                    initTimer();
+                   
+                } initTimer();
                       timer.Start();
-                }
             }
+            new LocalDataWatchWindow().Show();
         }
         private void initTimer()
         {
@@ -106,7 +110,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
         bool openCom()
         {
-            if (sp == null)
+            if (sp == null || (sp.IsOpen==false))
             {
                 sp = new SerialPort(BaseConfig.COM, BaseConfig.BaudRate);
                 sp.Parity = BaseConfig.Parity;
@@ -151,11 +155,12 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
           //  System.Threading.Thread.Sleep(50);
             try
             {
-                //string data = sp.ReadExisting();
-                //LogUtil.Logger.Info("[Read Data]" + data);
+                //string datas = sp.ReadExisting();
 
                 byte[] data = new byte[sp.BytesToRead];
                 sp.Read(data, 0, data.Length);
+
+              //  LogUtil.Logger.Info("[Read Data]" + data);
 
                 if (data.Length == RETURN_DATA_LENGTH)
                 {
@@ -180,6 +185,10 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                         byte[] old_ons = getOnOffState(lastRecord);
                         byte[] new_offs = getOnOffState(data);
 
+                        LogUtil.Logger.Info(new_offs);
+                        LogUtil.Logger.Error(new_offs[34]);
+                        
+
                         List<string> codes = new List<string>();
                         List<string> values = new List<string>();
                         for (int i = 0; i < old_ons.Length; i++)
@@ -189,8 +198,12 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                             {
                                 timeRecords[i] = timeRecords[i] + BaseConfig.COMTimerInterval;
                                 // #TODO 发送数据，多个发送
-                                codes.Add(merix[i].ToString());
-                                values.Add(timeRecords[i].ToString());
+                                // 过滤时间
+                                if (timeRecords[i] >= BaseConfig.FilterMillSecond)
+                                {
+                                    codes.Add(merix[i].ToString());
+                                    values.Add(timeRecords[i].ToString());
+                                }
                                 // 重置计时
                                 timeRecords[i] = 0;
                             }
@@ -200,12 +213,34 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                             }
 
                         }
+
+                        lastRecord = data;
+
                         if (codes.Count > 0)
                         {
                             AppService app = new AppService();
-                            app.PostPlcData(codes, values);
+                            string time=DateTime.Now.ToString();
+                            ResponseMessage<object> msg = app.PostPlcData(codes, values, time);
+                            if (msg.http_error)
+                            {
+                                // save the data in local
+                                string dir = System.IO.Path.Combine("Data\\UnHandle");
+                                if (!Directory.Exists(dir))
+                                {
+                                    Directory.CreateDirectory(dir);
+                                }
+
+                                using (FileStream fs = new FileStream(System.IO.Path.Combine(dir, DateTime.Now.ToString("yyyy-MM-dd HH-mm-sss") +Guid.NewGuid().ToString()+ ".txt"),
+                     FileMode.Create, FileAccess.Write))
+                                {
+                                    using (StreamWriter sw = new StreamWriter(fs))
+                                    {
+                                        sw.WriteLine(string.Join(",", codes.ToArray()) + ";" + string.Join(",", values.ToArray()) + ";" + time);
+                                    }
+                                }
+                            }
                         }
-                        lastRecord = data;
+                        
                     }
                 }
                 else
@@ -249,7 +284,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                     state[16 * i + j] =  bitstring[j].Equals((char)49) ? (byte)1 : (byte)0;//Convert.ToByte(Convert.ToString(bitstring[j],10));//Encoding.Default.GetBytes(bitstring[j]);//Convert.ToByte( Convert.ToInt16(bitstring[j]));
                 }
             }
-                LogUtil.Logger.Info(state);
+             //  LogUtil.Logger.Info(state);
             return state; 
         }
 
@@ -276,7 +311,10 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 }
                 if (cmd != null)
                 {
+          // this.Dispatcher.Invoke(DispatcherPriority.Normal, (System.Windows.Forms.MethodInvoker)delegate()
+            //    {
                     sp.Write(cmd, 0, cmd.Length);
+              //  });
                     LogUtil.Logger.Info("[Send CMD]" + ToHexString(cmd));
                 }
                 else
@@ -297,25 +335,26 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (sp != null)
-            {
-                try
-                {
-                    sp.Close();
-                    LogUtil.Logger.Info("Close Success");
-                    if (timer != null)
+         
+                    if (sp != null)
                     {
-                        timer.Enabled = false;
-                        timer.Stop();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogUtil.Logger.Error("Close Error");
-                    LogUtil.Logger.Error(ex.Message);
-                }
+                        try
+                        {
+                            sp.Close();
+                            LogUtil.Logger.Info("Close Success");
+                            if (timer != null)
+                            {
+                                timer.Enabled = false;
+                                timer.Stop();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            LogUtil.Logger.Error("Close Error");
+                            LogUtil.Logger.Error(ex.Message);
+                        }
 
-            }
+                    }
         }
 
         public   string ToHexString(byte[] bytes) // 0xae00cf => "AE00CF"

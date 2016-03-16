@@ -23,6 +23,7 @@ namespace Test.WPF
         public MainWindow()
         {
             InitializeComponent();
+            label2.Content = DateTime.Now.ToString("yyyy-MM-dd HH-mm-sss-fff");
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)

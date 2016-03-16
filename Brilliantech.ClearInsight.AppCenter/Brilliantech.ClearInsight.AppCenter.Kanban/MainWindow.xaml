@@ -11,10 +11,14 @@
         </Grid.RowDefinitions>
 
         <Grid>
-            <Label Grid.Column="1" FontSize="50" Margin="0 0 40 0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Right">
-                发货仓库
-            </Label>
+            <Grid Grid.Column="1">
+                <Label FontSize="50" Margin="0 0 150 0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Right">
+                    发货仓库
+                </Label>
 
+                <!--<CheckBox Name="test_btn" Content="" IsChecked="False" FontSize="50" HorizontalAlignment="Right" Foreground="White" VerticalAlignment="Center" Unchecked="test_btn_Unchecked" Checked="test_btn_Checked"></CheckBox>-->
+            </Grid>
+           
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -42,46 +46,51 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Border  Height="90" Margin="20 20 0 -40" CornerRadius="20 0 0 0" Background="#5a5a5a">
-                <Label FontSize="40" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">类 型</Label>
+            <Border  Height="90" Margin="20 0 0 -40" CornerRadius="20 0 0 0" Background="#5a5a5a">
+                <Label FontSize="60" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">类 型</Label>
             </Border>
 
             <!--<Border  Grid.Column="1" Height="90" Margin="0 20 0 -40"  Background="#5a5a5a">
                 <Label FontSize="40" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">Prod.Line</Label>
             </Border>-->
 
-            <Border  Grid.Column="1" Height="90" Margin="0 20 0 -40"  Background="#5a5a5a">
-                <Label FontSize="40" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">计 划</Label>
+            <Border  Grid.Column="1" Height="90" Margin="0 0 0 -40"  Background="#5a5a5a">
+                <Label FontSize="60" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">计 划</Label>
             </Border>
 
-            <Border  Grid.Column="2" Height="90" Margin="0 20 0 -40"  Background="#5a5a5a">
-                <Label FontSize="40" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">完 成</Label>
+            <Border  Grid.Column="2" Height="90" Margin="0 0 0 -40"  Background="#5a5a5a">
+                <Label FontSize="60" Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" VerticalAlignment="Center">完 成</Label>
             </Border>
 
-            <Border  Grid.Column="3" Height="90" Margin="0 20 0 -40"  Background="#5a5a5a">
-                <Label FontSize="40" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">剩 余</Label>
+            <Border  Grid.Column="3" Height="90" Margin="0 0 0 -40"  Background="#5a5a5a">
+                <Label FontSize="60" Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" VerticalAlignment="Center">剩 余</Label>
             </Border>
 
-            <Border  Grid.Column="5" Height="90" Margin="0 20 20 -40" CornerRadius="0 20 0 0"  Background="#5a5a5a">
-                <Label FontSize="40" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">状 态</Label>
+            <Border  Grid.Column="5" Height="90" Margin="0 0 20 -40" CornerRadius="0 20 0 0"  Background="#5a5a5a">
+                <Label FontSize="60" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">状 态</Label>
             </Border>
         </Grid>
 
         <DataGrid Grid.Row="2" x:Name="gridProducts" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding}"
-                      CanUserAddRows="False" LoadingRow="Grid_Row_Color" GridLinesVisibility="None" Margin="20" BorderThickness="0" Background="#404a56" HeadersVisibility="None">
+                      CanUserAddRows="False" LoadingRow="Grid_Row_Color" GridLinesVisibility="None" Margin="20" BorderThickness="0" Background="#2d2d30" HeadersVisibility="None">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Assembly" Width="*" Binding="{Binding Path=Assembly}" ElementStyle="{StaticResource contentCenterStyle}" ></DataGridTextColumn>
+                <DataGridTextColumn Header="Assembly" FontSize="52" FontWeight="Bold" Width="*" Binding="{Binding Path=Assembly}" ElementStyle="{StaticResource contentCenterStyle}" ></DataGridTextColumn>
                 <!--<DataGridTextColumn Header="Prod.Line" Width="*" Binding="{Binding Path=Prod_Line}" ElementStyle="{StaticResource contentCenterStyle}"></DataGridTextColumn>-->
-                <DataGridTextColumn Header="Planned" Width="*" Binding="{Binding Path=Planned}" ElementStyle="{StaticResource contentCenterStyle}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Produced" Width="*" Binding="{Binding Path=Produced}" ElementStyle="{StaticResource contentCenterStyle}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Rest" Width="*" Binding="{Binding Path=Rest}" ElementStyle="{StaticResource contentCenterStyle}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Status" Width="*" Binding="{Binding Path=Status}" ElementStyle="{StaticResource contentCenterStyle}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Planned" FontSize="60" FontWeight="Bold" Width="*" Binding="{Binding Path=Planned}" ElementStyle="{StaticResource contentCenterStyle}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Produced" FontSize="60" FontWeight="Bold" Width="*" Binding="{Binding Path=Produced}" ElementStyle="{StaticResource contentCenterStyle}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Rest" FontSize="60" FontWeight="Bold" Width="*" Binding="{Binding Path=Rest}" ElementStyle="{StaticResource contentCenterStyle}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Status" FontSize="60" FontWeight="Bold" Width="*" Binding="{Binding Path=Status}" ElementStyle="{StaticResource contentCenterStyle}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
 
         <Grid Grid.Row="3">
-            <Border  Grid.Column="5" Height="90" Margin="20 -60 20 0" CornerRadius="0 0 20 20"  Background="#404a56">
+            <Border  Grid.Column="5" Height="90" Margin="20 -60 20 0" CornerRadius="0 0 20 20"  Background="#2d2d30">
             </Border>
+        </Grid>
+
+        <Grid Grid.Row="2">
+        <Label Name="show_test_ch"  FontSize="100"  Visibility="Hidden" Foreground="Orange" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold">正在测试...</Label>
+        <Label Name="show_test_en" FontSize="100"  Foreground="Orange" Visibility="Hidden" HorizontalAlignment="Center" Margin="0 250 0 0" VerticalAlignment="Center" FontWeight="Bold">On Testing...</Label>
         </Grid>
     </Grid>
 </Window>

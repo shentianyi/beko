@@ -25,13 +25,25 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("P1,P2,P3")]
+        [global::System.Configuration.DefaultSettingValueAttribute("滚筒内装配线,滚筒箱体线,滚筒总装线,滚筒包装线")]
         public string ProductLines {
             get {
                 return ((string)(this["ProductLines"]));
             }
             set {
                 this["ProductLines"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OnTest {
+            get {
+                return ((bool)(this["OnTest"]));
+            }
+            set {
+                this["OnTest"] = value;
             }
         }
     }

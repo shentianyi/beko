@@ -14,7 +14,7 @@ namespace Brilliantech.ClearInsight.Framework
 {
     public class AppService
     {
-        public ResponseMessage<object> PostPlcData(List<string> codes, List<string> values)
+        public ResponseMessage<object> PostPlcData(List<string> codes, List<string> values,string time)
         {
             var msg = new ResponseMessage<object>();
             try
@@ -23,9 +23,11 @@ namespace Brilliantech.ClearInsight.Framework
                 var req = client.GenRequest(ApiConfig.PlcPostAction, Method.POST);
                 req.AddParameter("codes", string.Join(",", codes.ToArray()));
                 req.AddParameter("values", string.Join(",", values.ToArray()));
+                req.AddParameter("time", time);
 
                 var res = client.Execute(req);
                 msg = JsonUtil.parse<ResponseMessage<object>>(res.Content);
+                msg.http_error=false;
             }
             catch (WebFaultException<string> e)
             {

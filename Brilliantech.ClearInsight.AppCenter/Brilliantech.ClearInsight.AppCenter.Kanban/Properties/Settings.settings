@@ -3,7 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="ProductLines" Type="System.String" Scope="User">
-      <Value Profile="(Default)">P1,P2,P3</Value>
+      <Value Profile="(Default)">滚筒内装配线,滚筒箱体线,滚筒总装线,滚筒包装线</Value>
+    </Setting>
+    <Setting Name="OnTest" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

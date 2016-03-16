@@ -33,7 +33,11 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
 
 
         private System.Timers.Timer timer;
-        
+
+
+        // 0正常, 1警报,2系统错误 
+        private int status = 0;
+
 
         List<int> ids = new List<int>();
         List<string> productLines = new List<string>();
@@ -79,6 +83,15 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
 
 
             LampUtil.TurnNormal();
+
+            if (Properties.Settings.Default.OnTest)
+            {
+
+                test_btn_Checked(null, null);
+            }
+            else {
+                test_btn_Unchecked(null, null);
+            }
         }
         private void initPage() {
             if (!locked)
@@ -110,7 +123,10 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
                 {
                     foreach (var p in plans.data)
                     {
-                        bplans.Add(p);
+                        if (p.Status != "生产完")
+                        {
+                            bplans.Add(p);
+                        }
                     }
                 }
             }
@@ -130,13 +146,13 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
                 // this.Dispatcher.Invoke(DispatcherPriority.Normal, (MethodInvoker)delegate()
                 //{
                 locked = true;
-
+                
                 LampUtil.TurnOn();
+                
                 ids.Add(products.Id);
                 //});
             }
             else if (products.Status.Equals("生产完")) {
-
                 e.Row.Background = okBrush;
             }
             else
@@ -171,15 +187,16 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
             if (!locked)
             {
                 currentProductIndex += 1;
-                currentProductIndex = (currentProductIndex % productLines.Count);
-                this.Dispatcher.Invoke(DispatcherPriority.Normal, (MethodInvoker)delegate()
-               {
-                   initPage();
-               });
             }
-            else { 
-              
+            else
+            {
+
             }
+            currentProductIndex = (currentProductIndex % productLines.Count);
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (MethodInvoker)delegate()
+           {
+               initPage();
+           });
         }
 
         public void ShowCurrentTime(object sender, EventArgs e)
@@ -194,5 +211,20 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
             this.CurrentTime.Text += DateTime.Now.ToString("HH:mm:ss");
         }
 
+        private void test_btn_Checked(object sender, RoutedEventArgs e)
+        {
+            try {
+                show_test_ch.Visibility = Visibility.Visible;
+                show_test_en.Visibility = Visibility.Visible;
+            }catch(Exception ex)
+            {
+            }
+        }
+
+        private void test_btn_Unchecked(object sender, RoutedEventArgs e)
+        {
+            show_test_ch.Visibility = Visibility.Hidden;
+            show_test_en.Visibility = Visibility.Hidden;
+        }
     }
 }

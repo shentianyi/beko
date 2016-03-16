@@ -9,5 +9,6 @@
                 Margin="42,157,0,0" Name="TurnOnBtn" VerticalAlignment="Top" Width="89" Click="TurnOnBtn_Click" />
         <Button Content="Turn Off" Height="73" HorizontalAlignment="Left"
                 Margin="230,157,0,0" Name="TurnOff" VerticalAlignment="Top" Width="89" Click="TurnOff_Click" />
+        <Label Content="Label" Height="28" HorizontalAlignment="Left" Margin="91,66,0,0" Name="label2" VerticalAlignment="Top" />
     </Grid>
 </Window>

@@ -27,6 +27,8 @@ namespace Brilliantech.ClearInsight.Framework.Config
                 PlcPostAction = config.Get("PlcPostAction");
                 PlanAction = config.Get("PlanAction");
                 ConfirmPlanAction = config.Get("ConfirmPlanAction");
+
+                
                 //GetOrderCarByNrAction = config.Get("GetOrderCarByNrAction");
                 //GetOrderBoxByNrAction = config.Get("GetOrderBoxByNrAction");
                 //GetOrderBoxByNrsAction = config.Get("GetOrderBoxByNrsAction");
