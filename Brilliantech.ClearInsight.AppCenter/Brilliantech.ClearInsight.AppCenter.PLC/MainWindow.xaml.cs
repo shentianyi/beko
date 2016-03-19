@@ -20,6 +20,7 @@ using Brilliantech.ClearInsight.Framework.Model;
 using ScmWcfService.Model.Message;
 using System.Windows.Threading;
 using System.IO;
+using System.Threading;
 
 namespace Brilliantech.ClearInsight.AppCenter.PLC
 {
@@ -91,7 +92,9 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 if (openCom())
                 {
                    
-                } initTimer();
+                }
+              //  StartCmd();
+                initTimer();
                       timer.Start();
             }
             new LocalDataWatchWindow().Show();
@@ -160,8 +163,16 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 byte[] data = new byte[sp.BytesToRead];
                 sp.Read(data, 0, data.Length);
 
-              //  LogUtil.Logger.Info("[Read Data]" + data);
+//                byte[] onss = getOnOffState(data);
 
+  //              LogUtil.Logger.Error(onss[33]);
+               // LogUtil.Logger.Error(onss[34]);
+                        
+
+    //            return;
+            // LogUtil.Logger.Info("[Read Data]" );
+
+           //  LogUtil.Logger.Info(data);
                 if (data.Length == RETURN_DATA_LENGTH)
                 {
                     //LogUtil.Logger.Info("[LAST DATA]" + ToHexString(lastRecord));
@@ -186,6 +197,8 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                         byte[] new_offs = getOnOffState(data);
 
                         LogUtil.Logger.Info(new_offs);
+
+                        LogUtil.Logger.Error(new_offs[33]);
                         LogUtil.Logger.Error(new_offs[34]);
                         
 
@@ -214,7 +227,6 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
                         }
 
-                        lastRecord = data;
 
                         if (codes.Count > 0)
                         {
@@ -242,6 +254,9 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                         }
                         
                     }
+
+
+                    lastRecord = data;
                 }
                 else
                 {
@@ -295,9 +310,23 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         /// <param name="e"></param>
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            SecndCmd();
+        }
+
+        private void StartCmd() {
+
+            Thread inventoryThread = new Thread(SecndCmd);//盘点线程
+            inventoryThread.Start();
+        }
+        private void SecndCmd()
+        {
+            //while (true)
+            //{//
+            //Thread.Sleep(BaseConfig.COMTimerInterval);
             try
             {
-                if (sp == null || (sp.IsOpen==false)) {
+                if (sp == null || (sp.IsOpen == false))
+                {
                     openCom();
                 }
                 byte[] cmd = null;
@@ -311,19 +340,21 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 }
                 if (cmd != null)
                 {
-          // this.Dispatcher.Invoke(DispatcherPriority.Normal, (System.Windows.Forms.MethodInvoker)delegate()
-            //    {
+                    // this.Dispatcher.Invoke(DispatcherPriority.Normal, (System.Windows.Forms.MethodInvoker)delegate()
+                    //    {
                     sp.Write(cmd, 0, cmd.Length);
-              //  });
-                    LogUtil.Logger.Info("[Send CMD]" + ToHexString(cmd));
+                    //  });
+                  //  LogUtil.Logger.Info("[Send CMD]" + ToHexString(cmd));
                 }
                 else
                 {
                     LogUtil.Logger.Error("Not Set FUType");
                 }
             }
-            catch (Exception ex) {
-                if (openCount < 5) {
+            catch (Exception ex)
+            {
+                if (openCount < 5)
+                {
                     openCom();
                 }
 
@@ -331,6 +362,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 LogUtil.Logger.Error(ex.Message);
 
             }
+            //}
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -347,6 +379,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                                 timer.Enabled = false;
                                 timer.Stop();
                             }
+
                         }
                         catch (Exception ex)
                         {
@@ -355,6 +388,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                         }
 
                     }
+                    App.Current.Shutdown();
         }
 
         public   string ToHexString(byte[] bytes) // 0xae00cf => "AE00CF"

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brilliantech.Framwork", "..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brilliantech.ClearInsight.AppCenter.PLC", "Brilliantech.ClearInsight.AppCenter.PLC\Brilliantech.ClearInsight.AppCenter.PLC.csproj", "{A941C503-8C12-48A9-B2BC-7E5CB4F8FA18}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEST.Console", "TEST.Console\TEST.Console.csproj", "{71468D8C-7C55-4F6C-86D1-96D946A99E12}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,16 @@ Global
 		{A941C503-8C12-48A9-B2BC-7E5CB4F8FA18}.Release|Mixed Platforms.Build.0 = Release|x86
 		{A941C503-8C12-48A9-B2BC-7E5CB4F8FA18}.Release|x86.ActiveCfg = Release|x86
 		{A941C503-8C12-48A9-B2BC-7E5CB4F8FA18}.Release|x86.Build.0 = Release|x86
+		{71468D8C-7C55-4F6C-86D1-96D946A99E12}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{71468D8C-7C55-4F6C-86D1-96D946A99E12}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{71468D8C-7C55-4F6C-86D1-96D946A99E12}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{71468D8C-7C55-4F6C-86D1-96D946A99E12}.Debug|x86.ActiveCfg = Debug|x86
+		{71468D8C-7C55-4F6C-86D1-96D946A99E12}.Debug|x86.Build.0 = Debug|x86
+		{71468D8C-7C55-4F6C-86D1-96D946A99E12}.Release|Any CPU.ActiveCfg = Release|x86
+		{71468D8C-7C55-4F6C-86D1-96D946A99E12}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{71468D8C-7C55-4F6C-86D1-96D946A99E12}.Release|Mixed Platforms.Build.0 = Release|x86
+		{71468D8C-7C55-4F6C-86D1-96D946A99E12}.Release|x86.ActiveCfg = Release|x86
+		{71468D8C-7C55-4F6C-86D1-96D946A99E12}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
