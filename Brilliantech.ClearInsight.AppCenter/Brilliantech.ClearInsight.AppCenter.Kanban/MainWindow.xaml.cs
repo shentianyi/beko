@@ -58,6 +58,7 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
         private SolidColorBrush okBrush = new SolidColorBrush(Colors.Green);
 
         private SolidColorBrush normalBrush = new SolidColorBrush(CellColor);
+        private SolidColorBrush orangeBrush = new SolidColorBrush(Colors.Orange);
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -86,7 +87,6 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
 
             if (Properties.Settings.Default.OnTest)
             {
-
                 test_btn_Checked(null, null);
             }
             else {
@@ -111,6 +111,7 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
                 }
             }
         }
+
         private ObservableCollection<ProductionPlan> getPlan() {
             ObservableCollection<ProductionPlan> bplans = new ObservableCollection<ProductionPlan>();
 
@@ -154,6 +155,10 @@ namespace Brilliantech.ClearInsight.AppCenter.Kanban
             }
             else if (products.Status.Equals("生产完")) {
                 e.Row.Background = okBrush;
+            }
+            else if (products.Status.Equals("已确认"))
+            {
+                e.Row.Background = orangeBrush;
             }
             else
             {
