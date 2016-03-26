@@ -18,7 +18,18 @@ namespace Brilliantech.ClearInsight.Framework.Config
                 config = new ConfigUtil("Base", "Ini/base.ini");
 
                 FXType = config.Get("FXType");
-                Sensor = config.Get("Sensor").Split(',');
+                if (FXType != "Q02U")
+                {
+                    Sensor = config.Get("Sensor").Split(',');
+                }
+                else {
+                    string[] sensors = config.Get("Sensor").Split(',');
+                    Sensor = new string[sensors.Length];
+
+                    for (int i = 0; i < sensors.Length; i++) {
+                        Sensor[i] = sensors[i].Split('#')[1];
+                    }
+                }
                 COM = config.Get("COM");
                 BaudRate = int.Parse(config.Get("BaudRate"));
                 Parity = (Parity)int.Parse(config.Get("Parity"));
