@@ -42,6 +42,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         private static string[] merix;
 
         private Dictionary<int, float> timeRecords = new Dictionary<int, float>();
+        private Dictionary<int, DateTime> timeTicker = new Dictionary<int, DateTime>();
         private byte[] lastRecord;
 
 
@@ -87,6 +88,8 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 for (int i = 0; i < CONTROLS; i++)
                 {
                     timeRecords.Add(i, 0);
+                    DateTime current = DateTime.Now;
+                    timeTicker.Add(i, current);
                 }
                 for (int i = 0; i < RETURN_DATA_LENGTH; i++)
                 {
@@ -163,6 +166,9 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         /// <param name="e"></param>
         void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
+
+            DateTime current = DateTime.Now;
+
             if (BaseConfig.FXType == "Q02U")
             {
                 System.Threading.Thread.Sleep(50);
@@ -226,9 +232,12 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                         byte[] ons = getOnOffState(data);
                         for (int i = 0; i < ons.Length; i++)
                         {
-                            if (ons[i] == 1)
-                            {
-                                timeRecords[i] = timeRecords[i] + BaseConfig.COMTimerInterval;
+                            //if (ons[i] == 1)
+                            //{
+                            //   timeRecords[i] = timeRecords[i]+(int)(current-timeTicker[i]).TotalMilliseconds;//timeRecords[i] + BaseConfig.COMTimerInterval;
+                            //}
+                            if (ons[i] == 0) {
+                                timeTicker[i] = current;
                             }
                         }
                     }
@@ -250,7 +259,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
                             if (old_ons[i] == 1 && new_offs[i] == 0)
                             {
-                                timeRecords[i] = timeRecords[i] + BaseConfig.COMTimerInterval;
+                                timeRecords[i] =timeRecords[i]+  (int)(current - timeTicker[i]).TotalMilliseconds;//timeRecords[i] + BaseConfig.COMTimerInterval;
                                 // #TODO 发送数据，多个发送
                                 // 过滤时间
                                 if (timeRecords[i] >= BaseConfig.FilterMillSecond)
@@ -266,10 +275,11 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                                 }
                                 // 重置计时
                                 timeRecords[i] = 0;
+                                timeTicker[i] = current;
                             }
                             else if (old_ons[i] == 1 && new_offs[i] == 1)
                             {
-                                timeRecords[i] = timeRecords[i] + BaseConfig.COMTimerInterval;
+                               // timeRecords[i] = timeRecords[i] + (int)(current - timeTicker[i]).TotalMilliseconds; //timeRecords[i] + BaseConfig.COMTimerInterval;
                             }
 
                         }
