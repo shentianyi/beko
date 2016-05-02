@@ -8,54 +8,22 @@ namespace TEST.Console1
 {
     class Program
     {
+        const int CONTROLS = 48;
+        const int RETURN_DATA_LENGTH = 16;
+        const string FXType = "3U";
+        const int RETURN_DATA_GROUP_LENGTH=3;
+
         static void Main(string[] args)
         {
-            //string a = "a";
-            //string b = "b";
-            //b = a;
-            //a = "aa";
-
-           // byte[] state=new byte[16];
-           // byte[] data = new byte[] { 0x02, 0x30, 0x30, 0x30, 0x33, 0x03, 0x43, 0x36 };
-
-           //// byte[] group_data = new byte[] {  0x30 ,0x30,  0x30 , 0x33};
-
-           // int i = 0;
-           // byte[] group_data = new byte[4] { data[i * 4 + 1 + 2], data[i * 4 + 1 + 3], data[i * 4 + 1 + 0], data[i * 4 + 1 + 1] };
-
-           // string bitstring = new string(Convert.ToString(Convert.ToInt32(ASCIIEncoding.ASCII.GetString(group_data), 16), 2).Reverse().ToArray());
-
-           // Console.WriteLine(bitstring);
-
-           // for (int j = 0; j < bitstring.Length; j++)
-           // {
-           //     state[j] = bitstring[j].Equals((char)49) ? (byte)1 : (byte)0;//Convert.ToByte(Convert.ToString(bitstring[j],10));//Encoding.Default.GetBytes(bitstring[j]);//Convert.ToByte( Convert.ToInt16(bitstring[j]));
-           // }
-           // Console.WriteLine(state);
-
-            //string s = "";
-            //string prefix="";
-            ////for (int i = 1; i <= 960; i++) {
-            ////    prefix= i<10 ? "Q-C0" : "Q-C";
-            ////    s = s + "," + i + "#" + prefix + i;
-            ////}
-            //for (int i = 0; i < 992; i++)
-            //{
-            //    prefix = i < 10 ? "Q-C0" : "Q-C";
-            //    s = s + "," + i + "#X";
-            //}
-            //Console.WriteLine(s);
-            //string t="00 00 00 00 0D 0A";
-            //bool sss = t.EndsWith("0D 0A");
-
-
-            //string tt = "0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0";
-            //int ii = tt.Split(',').Length;
             DateTime st = DateTime.Now;
 
-          //  Thread.Sleep(1000);
-            for (int i = 0; i < 10000000; i++) { }
+            byte[] data=new byte[RETURN_DATA_LENGTH]{2, 70, 70, 48, 48, 48, 48, 48, 48, 48, 48, 48, 32, 3, 54, 70};
+            byte[] state=new byte[CONTROLS];
+
+            state = getOnOffState(data);
+            
             DateTime et = DateTime.Now;
+
 
             TimeSpan ts = et - st;
 
@@ -63,6 +31,64 @@ namespace TEST.Console1
             Console.WriteLine((int)ts.Milliseconds);
 
             Console.Read();
+        }
+
+
+
+        static byte[] getOnOffState(byte[] data)
+        {
+            byte[] state = new byte[CONTROLS];
+            for (int i = 0; i < state.Length; i++)
+            {
+                state[i] = 0;
+            }
+            if (FXType == "Q02U")
+            {
+                for (int i = 0; i < data.Length; i += 2)
+                {
+
+                    byte[] group_data = new byte[2] { data[i + 0], data[i + 1] };
+
+                    for (int j = 0; j < group_data.Length; j++)
+                    {
+                        string bitstring = new string(Convert.ToString(group_data[j], 2).Reverse().ToArray());
+                        for (int m = 0; m < bitstring.Length; m++)
+                        {
+                            //                          char s = bitstring[m];
+                            //                        bool ss = bitstring[m].Equals((char)49);
+                            //                      int iii = i * 8 + j * 8 + m;
+                            state[i * 8 + j * 8 + m] = bitstring[m].Equals((char)49) ? (byte)1 : (byte)0;
+                        }
+                    }
+
+                    //
+
+                    // int ii=Convert.ToInt32(hs, 16); 
+                    // string bitstring = new string(Convert.ToString(Convert.ToInt32(ASCIIEncoding.ASCII.GetString(group_data), 16), 2).Reverse().ToArray());
+                    // string s = bitstring;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < RETURN_DATA_GROUP_LENGTH; i++)
+                {
+                    byte[] group_data = new byte[4] { data[i * 4 + 1 + 2], data[i * 4 + 1 + 3], data[i * 4 + 1 + 0], data[i * 4 + 1 + 1] };
+
+                    string asciistring = ASCIIEncoding.ASCII.GetString(group_data);
+                    int i16 = Convert.ToInt32(ASCIIEncoding.ASCII.GetString(group_data), 16);
+                    string str2 = Convert.ToString(Convert.ToInt32(ASCIIEncoding.ASCII.GetString(group_data), 16), 2);
+
+                    var str2revers = Convert.ToString(Convert.ToInt32(ASCIIEncoding.ASCII.GetString(group_data), 16), 2).Reverse().ToArray();
+                    var newbitstring = new string(str2revers);
+                    string bitstring = new string(Convert.ToString(Convert.ToInt32(ASCIIEncoding.ASCII.GetString(group_data), 16), 2).Reverse().ToArray());
+
+                    for (int j = 0; j < bitstring.Length; j++)
+                    {
+                        state[16 * i + j] = bitstring[j].Equals((char)49) ? (byte)1 : (byte)0;//Convert.ToByte(Convert.ToString(bitstring[j],10));//Encoding.Default.GetBytes(bitstring[j]);//Convert.ToByte( Convert.ToInt16(bitstring[j]));
+                    }
+                }
+            }
+            return state;
         }
     }
 }

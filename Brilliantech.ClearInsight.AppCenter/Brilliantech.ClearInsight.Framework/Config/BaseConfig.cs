@@ -38,9 +38,14 @@ namespace Brilliantech.ClearInsight.Framework.Config
 
                 COMTimerInterval = int.Parse(config.Get("COMTimerInterval"));
                 KanbanTimerInterval =  int.Parse(config.Get("KanbanTimerInterval"));
+                
                 FilterMillSecond = int.Parse(config.Get("FilterMillSecond"));
+                MinFilterMillSecond = int.Parse(config.Get("MinFilterMillSecond"));
+
                 DeleteFileAfterRead = bool.Parse(config.Get("DeleteFileAfterRead"));
                 ReadLocalFileInterval = int.Parse(config.Get("ReadLocalFileInterval"));
+
+                WatchNodes = config.Get("WatchNodes").Split(',').ToList();
             }
             catch (Exception e)
             {
@@ -60,8 +65,10 @@ namespace Brilliantech.ClearInsight.Framework.Config
         public static int COMTimerInterval { get; set; }
         public static int KanbanTimerInterval { get; set; }
         public static int FilterMillSecond { get; set; }
+        public static int MinFilterMillSecond { get; set; }
 
         public static int ReadLocalFileInterval { get; set; }
         public static bool DeleteFileAfterRead { get; set; }
+        public static List<string> WatchNodes { get; set; }
     }
 }

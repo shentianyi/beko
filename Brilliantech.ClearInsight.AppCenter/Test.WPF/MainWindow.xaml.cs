@@ -46,5 +46,10 @@ namespace Test.WPF
         {
             LampUtil.TurnNormal();
         }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            new SensorWindow().ShowDialog();
+        }
     }
 }

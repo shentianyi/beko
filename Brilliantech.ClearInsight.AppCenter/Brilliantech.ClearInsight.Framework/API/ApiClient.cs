@@ -35,10 +35,25 @@ namespace Brilliantech.ClearInsight.Framework.API
             return responseHandler(response);
         }
 
+        public void ExecuteSync(IRestRequest request)
+        {
+            request.Timeout = 1000000000;
+            genClient().ExecuteAsync(request,null);
+           // genClient().ExecuteAsync(request,response=>{
+                //try
+                //{
+                //    responseHandler(response);
+                //}
+                //catch(Exception e) {
+                //    string ss = e.Message;
+                //}
+           // });
+        }
+
         private RestClient genClient()
         {
             var client = new RestClient();
-            client.Timeout = 10000;
+            client.Timeout = 1000000000;
             client.BaseUrl = ApiConfig.BaseUri;
             //if (this.token != null)
             //{

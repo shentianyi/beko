@@ -43,8 +43,6 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
         private Dictionary<int, float> timeRecords = new Dictionary<int, float>();
         private Dictionary<int, float> timeLastRecords = new Dictionary<int, float>();
-
-        private Dictionary<int, int> recordCount = new Dictionary<int, int>();
         private Dictionary<int, DateTime> timeTicker = new Dictionary<int, DateTime>();
         private Dictionary<int, DateTime> timeLastTicker = new Dictionary<int, DateTime>();
 
@@ -95,8 +93,6 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 {
                     timeRecords.Add(i, 0);
                     timeLastRecords.Add(i, 0);
-
-                    recordCount.Add(i, 0);
 
                     DateTime current = DateTime.Now;
                     timeTicker.Add(i, current);
@@ -257,6 +253,8 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                                 // LogUtil.Logger.Info("SAME................................");
                                 // 找到开着的 计时
                                 byte[] ons = getOnOffState(data);
+                                if (ons == null)
+                                    return;
                                 for (int i = 0; i < ons.Length; i++)
                                 {
                                     if (ons[i] == 0)
@@ -275,15 +273,16 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                             else
                             {
 
-                                //List<string> codes = new List<string>();
-                                //List<string> values = new List<string>();
+                                List<string> codes = new List<string>();
+                                List<string> values = new List<string>();
 
-                                Dictionary<string, string> CodeValue = new Dictionary<string, string>();
 
                                 // 如果不匹配，发送数据并重置计时器
                                 byte[] old_ons = getOnOffState(lastRecord);
                                 byte[] new_offs = getOnOffState(data);
 
+                                if (old_ons == null || new_offs == null)
+                                    return;
                                 // LogUtil.Logger.Info(new_offs);
 
                                 for (int i = 0; i < old_ons.Length; i++)
@@ -328,13 +327,10 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                                                 {
                                                     if (merix[i] != "X")
                                                     {
-                                                             recordCount[i] += 1;
-
                                                         if (BaseConfig.WatchNodes.IndexOf(merix[i]) > -1)
-                                                            LogUtil.Logger.Info("i:" + i + ":code: " + merix[i].ToString() + "count:" + recordCount[i]  +":" + timeLastRecords[i].ToString() + ":" + timeRecords[i].ToString());
-                                                       // codes.Add(merix[i].ToString());
-                                                        //values.Add(timeRecords[i].ToString());
-                                                        CodeValue.Add(merix[i].ToString(), timeRecords[i].ToString());
+                                                            LogUtil.Logger.Info("i:" + i + ":code: " + merix[i].ToString() + ":" + timeLastRecords[i].ToString() + ":" + timeRecords[i].ToString());
+                                                        codes.Add(merix[i].ToString());
+                                                        values.Add(timeRecords[i].ToString());
                                                     }
                                                 }
                                                 // 将计时器设置到当前时间
@@ -356,42 +352,37 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                                 }
 
 
-                                if (CodeValue.Count > 0)
+                                if (codes.Count > 0)
                                 {
                                     foreach (string node in BaseConfig.WatchNodes)
                                     {
-                                        if (CodeValue.Keys.Contains(node))
+                                        if (codes.Contains(node))
                                         {
-                                           // LogUtil.Logger.Info(codes);
+                                            LogUtil.Logger.Info(codes);
                                             break;
                                         }
                                     }
+                                    AppService app = new AppService();
+                                    string time = DateTime.Now.ToString();
+                                    ResponseMessage<object> msg = app.PostPlcData(codes, values, time);
+                                    if (msg != null && msg.http_error)
+                                    {
+                                        // save the data in local
+                                        string dir = System.IO.Path.Combine("Data\\UnHandle");
+                                        if (!Directory.Exists(dir))
+                                        {
+                                            Directory.CreateDirectory(dir);
+                                        }
 
-                                 //    this.Dispatcher.Invoke(DispatcherPriority.Normal, (System.Windows.Forms.MethodInvoker)delegate()
-                                   //   {
-                                    ThreadPool.QueueUserWorkItem(new WaitCallback(postData), CodeValue);
-                                //});
-                             //       AppService app = new AppService();
-                             //       string time = DateTime.Now.ToString();
-                             //       ResponseMessage<object> msg = app.PostPlcData(codes, values, time);
-                             //       if (msg != null && msg.http_error)
-                             //       {
-                             //           // save the data in local
-                             //           string dir = System.IO.Path.Combine("Data\\UnHandle");
-                             //           if (!Directory.Exists(dir))
-                             //           {
-                             //               Directory.CreateDirectory(dir);
-                             //           }
-
-                             //           using (FileStream fs = new FileStream(System.IO.Path.Combine(dir, DateTime.Now.ToString("yyyy-MM-dd HH-mm-sss") + Guid.NewGuid().ToString() + ".txt"),
-                             //FileMode.Create, FileAccess.Write))
-                             //           {
-                             //               using (StreamWriter sw = new StreamWriter(fs))
-                             //               {
-                             //                   sw.WriteLine(string.Join(",", codes.ToArray()) + ";" + string.Join(",", values.ToArray()) + ";" + time);
-                             //               }
-                             //           }
-                             //       }
+                                        using (FileStream fs = new FileStream(System.IO.Path.Combine(dir, DateTime.Now.ToString("yyyy-MM-dd HH-mm-sss") + Guid.NewGuid().ToString() + ".txt"),
+                             FileMode.Create, FileAccess.Write))
+                                        {
+                                            using (StreamWriter sw = new StreamWriter(fs))
+                                            {
+                                                sw.WriteLine(string.Join(",", codes.ToArray()) + ";" + string.Join(",", values.ToArray()) + ";" + time);
+                                            }
+                                        }
+                                    }
                                 }
                             }
 
@@ -422,71 +413,51 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         
         }
 
-        void postData(object cv)
-        {
-            Dictionary<string, string> CodeValue = (Dictionary<string, string>)cv;
-            List<string> codes = CodeValue.Keys.ToList();
-            List<string> values = CodeValue.Keys.ToList();
-
-            AppService app = new AppService();
-            string time = DateTime.Now.ToString();
-            ResponseMessage<object> msg = app.PostPlcData(codes, values, time);
-            if (msg != null && msg.http_error)
-            {
-                // save the data in local
-                string dir = System.IO.Path.Combine("Data\\UnHandle");
-                if (!Directory.Exists(dir))
-                {
-                    Directory.CreateDirectory(dir);
-                }
-
-                using (FileStream fs = new FileStream(System.IO.Path.Combine(dir, DateTime.Now.ToString("yyyy-MM-dd HH-mm-sss") + Guid.NewGuid().ToString() + ".txt"),
-     FileMode.Create, FileAccess.Write))
-                {
-                    using (StreamWriter sw = new StreamWriter(fs))
-                    {
-                        sw.WriteLine(string.Join(",", codes.ToArray()) + ";" + string.Join(",", values.ToArray()) + ";" + time);
-                    }
-                }
-            }
-
-        }
-
         byte[] getOnOffState(byte[] data) {
-            byte[] state = new byte[CONTROLS];
-            for (int i = 0; i < state.Length; i++) {
-                state[i] = 0;
-            }
-            if (BaseConfig.FXType == "Q02U")
+            try
             {
-                for (int i = 0; i < data.Length; i+=2) {
-                 
-                    byte[] group_data = new byte[2] { data[i  + 0], data[i  + 1] };
- 
-                    for (int j = 0; j < group_data.Length; j++) {
-                        string bitstring = new string( Convert.ToString(group_data[j], 2).Reverse().ToArray());
-                        for (int m = 0; m < bitstring.Length; m++)
+                byte[] state = new byte[CONTROLS];
+                for (int i = 0; i < state.Length; i++)
+                {
+                    state[i] = 0;
+                }
+                if (BaseConfig.FXType == "Q02U")
+                {
+                    for (int i = 0; i < data.Length; i += 2)
+                    {
+
+                        byte[] group_data = new byte[2] { data[i + 0], data[i + 1] };
+
+                        for (int j = 0; j < group_data.Length; j++)
                         {
-                            state[i * 8 + j * 8+m] = bitstring[m].Equals((char)49) ? (byte)1 : (byte)0;
+                            string bitstring = new string(Convert.ToString(group_data[j], 2).Reverse().ToArray());
+                            for (int m = 0; m < bitstring.Length; m++)
+                            {
+                                state[i * 8 + j * 8 + m] = bitstring[m].Equals((char)49) ? (byte)1 : (byte)0;
+                            }
                         }
                     }
                 }
-            }
-            else
-            {
-                for (int i = 0; i < RETURN_DATA_GROUP_LENGTH; i++)
+                else
                 {
-                    byte[] group_data = new byte[4] { data[i * 4 + 1 + 2], data[i * 4 + 1 + 3], data[i * 4 + 1 + 0], data[i * 4 + 1 + 1] };
-
-                    string bitstring = new string(Convert.ToString(Convert.ToInt32(ASCIIEncoding.ASCII.GetString(group_data), 16), 2).Reverse().ToArray());
-
-                    for (int j = 0; j < bitstring.Length; j++)
+                    for (int i = 0; i < RETURN_DATA_GROUP_LENGTH; i++)
                     {
-                        state[16 * i + j] = bitstring[j].Equals((char)49) ? (byte)1 : (byte)0;//Convert.ToByte(Convert.ToString(bitstring[j],10));//Encoding.Default.GetBytes(bitstring[j]);//Convert.ToByte( Convert.ToInt16(bitstring[j]));
+                        byte[] group_data = new byte[4] { data[i * 4 + 1 + 2], data[i * 4 + 1 + 3], data[i * 4 + 1 + 0], data[i * 4 + 1 + 1] };
+
+                        string bitstring = new string(Convert.ToString(Convert.ToInt32(ASCIIEncoding.ASCII.GetString(group_data), 16), 2).Reverse().ToArray());
+
+                        for (int j = 0; j < bitstring.Length; j++)
+                        {
+                            state[16 * i + j] = bitstring[j].Equals((char)49) ? (byte)1 : (byte)0;//Convert.ToByte(Convert.ToString(bitstring[j],10));//Encoding.Default.GetBytes(bitstring[j]);//Convert.ToByte( Convert.ToInt16(bitstring[j]));
+                        }
                     }
                 }
+                return state;
             }
-            return state; 
+            catch (Exception e) { 
+             
+            }
+            return null;
         }
 
         /// <summary>
