@@ -10,7 +10,7 @@ namespace Brilliantech.ClearInsight.Framework.Config
     public class BaseConfig
     {
         private static ConfigUtil config;
-       
+
         static BaseConfig()
         {
             try
@@ -22,11 +22,13 @@ namespace Brilliantech.ClearInsight.Framework.Config
                 {
                     Sensor = config.Get("Sensor").Split(',');
                 }
-                else {
+                else
+                {
                     string[] sensors = config.Get("Sensor").Split(',');
                     Sensor = new string[sensors.Length];
 
-                    for (int i = 0; i < sensors.Length; i++) {
+                    for (int i = 0; i < sensors.Length; i++)
+                    {
                         Sensor[i] = sensors[i].Split('#')[1];
                     }
                 }
@@ -37,8 +39,8 @@ namespace Brilliantech.ClearInsight.Framework.Config
                 StopBits = (StopBits)int.Parse(config.Get("StopBits"));
 
                 COMTimerInterval = int.Parse(config.Get("COMTimerInterval"));
-                KanbanTimerInterval =  int.Parse(config.Get("KanbanTimerInterval"));
-                
+                KanbanTimerInterval = int.Parse(config.Get("KanbanTimerInterval"));
+
                 FilterMillSecond = int.Parse(config.Get("FilterMillSecond"));
                 MinFilterMillSecond = int.Parse(config.Get("MinFilterMillSecond"));
 
@@ -46,6 +48,11 @@ namespace Brilliantech.ClearInsight.Framework.Config
                 ReadLocalFileInterval = int.Parse(config.Get("ReadLocalFileInterval"));
 
                 WatchNodes = config.Get("WatchNodes").Split(',').ToList();
+
+                SaveLocal = bool.Parse(config.Get("SaveLocal"));
+
+                OnFlag = byte.Parse(config.Get("OnFlag"));
+                OffFlag = byte.Parse(config.Get("OffFlag"));
             }
             catch (Exception e)
             {
@@ -70,5 +77,9 @@ namespace Brilliantech.ClearInsight.Framework.Config
         public static int ReadLocalFileInterval { get; set; }
         public static bool DeleteFileAfterRead { get; set; }
         public static List<string> WatchNodes { get; set; }
+
+        public static bool SaveLocal { get; set; }
+        public static byte OnFlag { get; set; }
+        public static byte OffFlag { get; set; }
     }
 }

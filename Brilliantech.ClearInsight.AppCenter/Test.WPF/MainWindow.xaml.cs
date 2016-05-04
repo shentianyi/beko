@@ -51,5 +51,10 @@ namespace Test.WPF
         {
             new SensorWindow().ShowDialog();
         }
+
+        private void button2_Click(object sender, RoutedEventArgs e)
+        {
+            new Q2GenWindow().ShowDialog();
+        }
     }
 }

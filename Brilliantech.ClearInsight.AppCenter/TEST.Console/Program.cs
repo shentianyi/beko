@@ -17,17 +17,21 @@ namespace TEST.Console1
         {
             DateTime st = DateTime.Now;
 
-            byte[] data=new byte[RETURN_DATA_LENGTH]{2, 70, 70, 48, 48, 48, 48, 48, 48, 48, 48, 48, 32, 3, 54, 70};
+           // byte[] data=new byte[RETURN_DATA_LENGTH]{2, 70, 70, 48, 48, 48, 48, 48, 48, 48, 48, 48, 32, 3, 54, 70};
+
+            byte[] data = new byte[RETURN_DATA_LENGTH] { 2, 70, 70, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 3, 54, 70 };
             byte[] state=new byte[CONTROLS];
 
-            state = getOnOffState(data);
-            
+           state = getOnOffState(data);
+             Thread.Sleep(1000);
             DateTime et = DateTime.Now;
-
+           
+          
+           
 
             TimeSpan ts = et - st;
-
-
+            Console.WriteLine(ts.TotalMilliseconds);
+            Console.WriteLine((int)(et - st).TotalMilliseconds);
             Console.WriteLine((int)ts.Milliseconds);
 
             Console.Read();

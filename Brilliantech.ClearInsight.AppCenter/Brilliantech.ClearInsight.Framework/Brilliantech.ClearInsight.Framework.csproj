@@ -89,6 +89,9 @@
     <None Include="Ini\base.q02u.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Ini\base.q02u.ubutton.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="ThridPart\Quvc_dll.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

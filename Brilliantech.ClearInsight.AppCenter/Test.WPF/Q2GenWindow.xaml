@@ -1,0 +1,14 @@
+﻿<Window x:Class="Test.WPF.Q2GenWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Q2GenWindow" Height="470" Width="545" Loaded="Window_Loaded">
+    <Grid>
+        <Label Content="Index:" Height="28" HorizontalAlignment="Left" Margin="14,3,0,0" Name="label1" VerticalAlignment="Top" />
+        <TextBox Height="132" HorizontalAlignment="Left" Margin="16,34,0,0" Name="indexTB"
+                 Text="105-103,104-97,103-94,102-91,101-88,98-82,97-X,93-70,91-X,90-X,88-34,87-X,86-25,85-22,84-593,83-590,82-587,81-584,80-581,78-578,77-575,76-569,74-566,107-563,79-557,73-548,72-545,70-539,69-533,68-530,24-527,42-524,44-X,43-503,41-497,38-X,36-482,34-476,25-470,26-464,108-405,19-396,17-X,16-384,14-378,13-X,12-372,10-X,9-X,8-X,7-X,6-348,5-448"
+                 VerticalAlignment="Top" Width="450" TextWrapping="Wrap" />
+        <TextBox Height="215" HorizontalAlignment="Left" Margin="16,204,0,0" Name="resultTB" TextWrapping="Wrap" VerticalAlignment="Top" Width="488" />
+        <Button Content="GO" Height="132" HorizontalAlignment="Left" Margin="472,34,0,0" Name="button1" VerticalAlignment="Top" Width="44" Click="button1_Click" />
+        <Label Content="Result:" Height="28" HorizontalAlignment="Left" Margin="16,172,0,0" Name="label2" VerticalAlignment="Top" />
+    </Grid>
+</Window>

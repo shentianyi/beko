@@ -11,5 +11,6 @@
                 Margin="150,157,0,0" Name="TurnOff" VerticalAlignment="Top" Width="89" Click="TurnOff_Click" />
         <Label Content="Label" Height="28" HorizontalAlignment="Left" Margin="91,66,0,0" Name="label2" VerticalAlignment="Top" />
         <Button Content="Sensor Data" Height="74" HorizontalAlignment="Left" Margin="306,32,0,0" Name="button1" VerticalAlignment="Top" Width="166" Click="button1_Click" />
+        <Button Content="Q2 Gen" Height="50" HorizontalAlignment="Left" Margin="306,131,0,0" Name="button2" VerticalAlignment="Top" Width="166" Click="button2_Click" />
     </Grid>
 </Window>
