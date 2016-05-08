@@ -355,7 +355,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                                                 timeRecords[i] = 0;
                                                 timeRecords[i] = (int)(current - timeTicker[i]).TotalMilliseconds;
 
-                                                LogUtil.Logger.Error(i + ":time...................." + timeRecords[i] + ":" + current.ToString() + ":" + timeTicker[i].ToString());
+                                              //  LogUtil.Logger.Error(i + ":time...................." + timeRecords[i] + ":" + current.ToString() + ":" + timeTicker[i].ToString());
                                             }
                                              
 
@@ -368,7 +368,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                                                     if (BaseConfig.WatchNodes.IndexOf(merix[i]) > -1)
                                                         LogUtil.Logger.Info("i:" + i + ":code: " + merix[i].ToString() + "count:" + recordCount[i] + ":" + timeLastRecords[i].ToString() + ":" + timeRecords[i].ToString());
 
-                                                    LogUtil.Logger.Error(i+":time...................." + timeRecords[i]);
+                                                   // LogUtil.Logger.Error(i+":time...................." + timeRecords[i]);
 
                                                     CodeValue.Add(merix[i].ToString(), timeRecords[i].ToString());
                                                   //  timeRecords[i] = 0;
