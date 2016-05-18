@@ -200,57 +200,21 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         /// <param name="e"></param>
         void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-
-            // DateTime current = DateTime.Now;
-            byte[] data_all = new byte[sp.BytesToRead];
-            sp.Read(data_all, 0, data_all.Length);
-            //count += 1;
-            //LogUtil.Logger.Debug(count);
-            // enqueue
-            StartReceivedMessage(
-                new Message()
-                {
-                    Data = data_all,
-                    ReceivedTime = DateTime.Now
-                });
-        }
-
-        private void StartReceivedMessage(Message receivedMessage)
-        {
-            receiveMessageQueue.Enqueue(receivedMessage);
-            receivedEvent.Set();
-        }
-         
-        private void ReceiveMessageThread()
-        {
-            while (true)
-            {
-                while (receiveMessageQueue.Count > 0)
-                {
-                    ReceivedMessage((Message)receiveMessageQueue.Dequeue());
-                }
-
-                receivedEvent.WaitOne();
-                receivedEvent.Reset();
-            }
-        }
-
-        private void ReceivedMessage(Message message) 
-        {
-            byte[] data_all = message.Data;
-            DateTime current =  message.ReceivedTime;
-            // LogUtil.Logger.Debug(data_all);
-            if (BaseConfig.FXType == "Q02U")
-            {
-                // System.Threading.Thread.Sleep(50);
-            }
             try
             {
-                if (BaseConfig.FXType == "Q02U" && data_all.Length > 0)
+                //if (BaseConfig.FXType == "Q02U")
+                //{
+                //   // System.Threading.Thread.Sleep(50);
+                //}
+
+                byte[] data_all = new byte[sp.BytesToRead];
+                sp.Read(data_all, 0, data_all.Length);
+                //LogUtil.Logger.Info(data_all);
+                //LogUtil.Logger.Info("-------------------------------------------");
+                if (BaseConfig.FXType == "Q02U")
                 {
                     string check = ToHexString(data_all);
-
-
+                   // LogUtil.Logger.Info(check);
                     if (check.StartsWith("EE 1A") && check.EndsWith("0D 0A") && data_all.Length == 124)
                     {
                         // 完整的数据
@@ -275,6 +239,16 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                         }
                         data_all = g_data;
                         g_index = 0;
+                        if (data_all.Length % RETURN_DATA_LENGTH == 0 && data_all.Length>0)
+                        {
+
+                            StartReceivedMessage(
+                                new Message()
+                                {
+                                    Data = data_all,
+                                    ReceivedTime = DateTime.Now
+                                });
+                        }
                     }
                     else
                     {
@@ -285,6 +259,60 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                         g_index += data_all.Length;
                     }
                 }
+                else
+                {
+                    StartReceivedMessage(
+                        new Message()
+                        {
+                            Data = data_all,
+                            ReceivedTime = DateTime.Now
+                        });
+                }
+            }
+            catch (Exception ex)
+            {
+                LogUtil.Logger.Error("Receive Data Error");
+
+                LogUtil.Logger.Error(ex.StackTrace);
+
+                LogUtil.Logger.Error(ex.Message);
+            }
+
+        }
+
+        private void StartReceivedMessage(Message receivedMessage)
+        {
+            receiveMessageQueue.Enqueue(receivedMessage);
+            receivedEvent.Set();
+        }
+         
+        private void ReceiveMessageThread()
+        {
+            while (true)
+            {
+                while (receiveMessageQueue.Count > 0)
+                {
+                    ReceivedMessage((Message)receiveMessageQueue.Dequeue());
+                }
+
+                receivedEvent.WaitOne();
+                receivedEvent.Reset();
+            }
+        }
+
+        private void ReceivedMessage(Message message) 
+        {
+            //  LogUtil.Logger.Debug("receive data");
+            if (BaseConfig.FXType == "Q02U")
+            {
+                // System.Threading.Thread.Sleep(50);
+            }
+            try
+            {
+
+                byte[] data_all = message.Data;
+                DateTime current = message.ReceivedTime;
+
                 if (data_all.Length % RETURN_DATA_LENGTH == 0)
                 {
                     int group = data_all.Length / RETURN_DATA_LENGTH;
@@ -318,8 +346,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                             // 如果不匹配，发送数据并重置计时器
                             byte[] old_ons = getOnOffState(lastRecord);
                             byte[] new_offs = getOnOffState(data);
-
-                            // LogUtil.Logger.Info(new_offs);
+                            
 
                             for (int i = 0; i < old_ons.Length; i++)
                             {
@@ -337,7 +364,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
                                         if (time < BaseConfig.MinFilterMillSecond)
                                         {
-                                            if (BaseConfig.WatchNodes.IndexOf(merix[i]) > -1)
+                                           // if (BaseConfig.WatchNodes.IndexOf(merix[i]) > -1)
                                                 LogUtil.Logger.Info("flash:" + merix[i].ToString() + ":" + time);
                                             timeLastRecords[i] += time;
                                             // 说明是信号波动
@@ -354,8 +381,8 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                                             {
                                                 timeRecords[i] = 0;
                                                 timeRecords[i] = (int)(current - timeTicker[i]).TotalMilliseconds;
-
-                                              //  LogUtil.Logger.Error(i + ":time...................." + timeRecords[i] + ":" + current.ToString() + ":" + timeTicker[i].ToString());
+ 
+                                                LogUtil.Logger.Error(i + ":time...................." + timeRecords[i] + ":" + current.ToString() + ":" + timeTicker[i].ToString());
                                             }
                                              
 
@@ -365,7 +392,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                                                 {
                                                     recordCount[i] += 1;
 
-                                                    if (BaseConfig.WatchNodes.IndexOf(merix[i]) > -1)
+                                                   // if (BaseConfig.WatchNodes.IndexOf(merix[i]) > -1)
                                                         LogUtil.Logger.Info("i:" + i + ":code: " + merix[i].ToString() + "count:" + recordCount[i] + ":" + timeLastRecords[i].ToString() + ":" + timeRecords[i].ToString());
 
                                                    // LogUtil.Logger.Error(i+":time...................." + timeRecords[i]);
@@ -416,9 +443,6 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             catch (Exception ex)
             {
                 LogUtil.Logger.Error("Read Com Error");
-
-
-                LogUtil.Logger.Error(data_all);
 
                 LogUtil.Logger.Error(ex.StackTrace);
 
@@ -477,22 +501,26 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             }
         }
 
-        byte[] getOnOffState(byte[] data) {
+        byte[] getOnOffState(byte[] data)
+        {
             byte[] state = new byte[CONTROLS];
-            for (int i = 0; i < state.Length; i++) {
+            for (int i = 0; i < state.Length; i++)
+            {
                 state[i] = 0;
             }
             if (BaseConfig.FXType == "Q02U")
             {
-                for (int i = 0; i < data.Length; i+=2) {
-                 
-                    byte[] group_data = new byte[2] { data[i  + 0], data[i  + 1] };
- 
-                    for (int j = 0; j < group_data.Length; j++) {
-                        string bitstring = new string( Convert.ToString(group_data[j], 2).Reverse().ToArray());
+                for (int i = 0; i < data.Length; i += 2)
+                {
+
+                    byte[] group_data = new byte[2] { data[i + 0], data[i + 1] };
+
+                    for (int j = 0; j < group_data.Length; j++)
+                    {
+                        string bitstring = new string(Convert.ToString(group_data[j], 2).Reverse().ToArray());
                         for (int m = 0; m < bitstring.Length; m++)
                         {
-                            state[i * 8 + j * 8+m] = bitstring[m].Equals((char)49) ? (byte)1 : (byte)0;
+                            state[i * 8 + j * 8 + m] = bitstring[m].Equals((char)49) ? (byte)1 : (byte)0;
                         }
                     }
                 }
@@ -511,7 +539,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                     }
                 }
             }
-            return state; 
+            return state;
         }
 
         /// <summary>
