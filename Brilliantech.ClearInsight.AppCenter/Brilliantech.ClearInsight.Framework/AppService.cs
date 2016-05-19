@@ -14,13 +14,14 @@ namespace Brilliantech.ClearInsight.Framework
 {
     public class AppService
     {
+
         public ResponseMessage<object> PostPlcData(List<string> codes, List<string> values,string time)
         {
             var msg = new ResponseMessage<object>() { http_error=false};
             try
             {
                 var client = new ApiClient();
-                var req = client.GenRequest(ApiConfig.PlcPostAction, Method.POST);
+                var req = client.GenRequest(ApiConfig.PlcOnOffPostAction, Method.POST);
                 req.AddParameter("codes", string.Join(",", codes.ToArray()));
                 req.AddParameter("values", string.Join(",", values.ToArray()));
                 req.AddParameter("time", time);
@@ -55,13 +56,54 @@ namespace Brilliantech.ClearInsight.Framework
         }
 
 
+        public ResponseMessage<object> SyncPostOnOffData(string kpiCode,string code, string value, string time)
+        {
+            var msg = new ResponseMessage<object>() { http_error = false };
+            try
+            {
+                var client = new ApiClient();
+                var req = client.GenRequest(ApiConfig.PlcOnOffPostAction, Method.POST);
+                req.AddParameter("kpi_code", kpiCode);
+                req.AddParameter("codes", code);
+                req.AddParameter("values",  value);
+                req.AddParameter("time", time);
+
+                client.ExecuteSync(req);
+                //var res = client.Execute(req);
+                // msg = JsonUtil.parse<ResponseMessage<object>>(res.Content);
+
+                if (msg != null)
+                {
+                    msg.http_error = false;
+                }
+            }
+            catch (WebFaultException<string> e)
+            {
+                if (msg != null)
+                {
+                    msg.http_error = true;
+                    msg.meta.error_message = e.Detail;
+                }
+            }
+            catch (Exception e)
+            {
+                if (msg != null)
+                {
+                    msg.http_error = true;
+                    msg.meta.error_message = "系统服务错误，请联系管理员";
+                }
+            }
+
+            return msg;
+        }
+
         public ResponseMessage<object> SyncPostPlcData(List<string> codes, List<string> values, string time)
         {
             var msg = new ResponseMessage<object>() { http_error = false };
             try
             {
                 var client = new ApiClient();
-                var req = client.GenRequest(ApiConfig.PlcPostAction, Method.POST);
+                var req = client.GenRequest(ApiConfig.PlcOnOffPostAction, Method.POST);
                 req.AddParameter("codes", string.Join(",",codes.ToArray()));
                 req.AddParameter("values", string.Join(",", values.ToArray()));
                 req.AddParameter("time", time);

@@ -33,21 +33,22 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
 
         private System.Timers.Timer sendCmdTimer;
-
-        private static int RETURN_DATA_LENGTH = 0;
+        
+        private static int RETURN_DATA_LENGTH=0;
         private static int RETURN_DATA_GROUP_LENGTH = 0;
         private static int CONTROLS = 0;
 
-        private List<Sensor> sensors = new List<Sensor>();
-        //private static string[] merix;
 
-        //private Dictionary<int, float> timeRecords = new Dictionary<int, float>();
-        //private Dictionary<int, float> timeLastRecords = new Dictionary<int, float>();
+        private static string[] merix;
 
-        //private Dictionary<int, int> recordCount = new Dictionary<int, int>();
-        //private Dictionary<int, DateTime> timeTicker = new Dictionary<int, DateTime>();
-        //private Dictionary<int, DateTime> timeLastTicker = new Dictionary<int, DateTime>();
+        private Dictionary<int, float> timeRecords = new Dictionary<int, float>();
+        private Dictionary<int, float> timeLastRecords = new Dictionary<int, float>();
 
+        private Dictionary<int, int> recordCount = new Dictionary<int, int>();
+        private Dictionary<int, DateTime> timeTicker = new Dictionary<int, DateTime>();
+        private Dictionary<int, DateTime> timeLastTicker = new Dictionary<int, DateTime>();
+
+        private byte[] lastRecord;
 
         private object locker = new object();
 
@@ -66,20 +67,20 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //  merix = BaseConfig.Sensor;
+            merix = BaseConfig.Sensor;
 
             if (BaseConfig.FXType.Equals("3U"))
             {
                 RETURN_DATA_LENGTH = 16;
                 CONTROLS = 48;
                 RETURN_DATA_GROUP_LENGTH = 3;
-            }
+             }
             else if (BaseConfig.FXType.Equals("1N"))
             {
                 RETURN_DATA_LENGTH = 8;
                 CONTROLS = 16;
                 RETURN_DATA_GROUP_LENGTH = 1;
-            }
+           }
             else if (BaseConfig.FXType == "Q02U")
             {
                 // to do
@@ -93,41 +94,51 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             }
             if (RETURN_DATA_LENGTH > 0)
             {
-                for (int i = 0; i < BaseConfig.Sensor.Length; i++)
-                {
-                    sensors.Add(new Sensor()
-                    {
-                        Code = BaseConfig.Sensor[i],
-                        OnFlag = BaseConfig.OnFlag,
-                        OffFlag = BaseConfig.OffFlag,
-                        IsEmergency = false
-                    });
-                }
+                lastRecord = new byte[RETURN_DATA_LENGTH];
 
+                /// 初始化记录数据
+                for (int i = 0; i < CONTROLS; i++)
+                {
+                    timeRecords.Add(i, 0);
+                    timeLastRecords.Add(i, 0);
+
+                    recordCount.Add(i, 0);
+
+                    DateTime current = DateTime.Now;
+                    timeTicker.Add(i, current);
+                    timeLastTicker.Add(i, current);
+
+                }
+                for (int i = 0; i < RETURN_DATA_LENGTH; i++)
+                {
+                    lastRecord[i] = 0x30;
+
+                    if(i%2==0)
+                    lastRecord[i] =(byte)Convert.ToChar(  BaseConfig.OffFlag.ToString());
+                }
 
 
                 if (openCom())
                 {
 
-                    if (BaseConfig.FXType != "Q02U")
-                    {
-                        initTimer();
-                        sendCmdTimer.Start();
-                    }
                 }
 
-
-
-                if (BaseConfig.SaveLocal)
+                if (BaseConfig.FXType != "Q02U")
                 {
-                    new LocalDataWatchWindow().Show();
+                    initTimer();
+                    sendCmdTimer.Start();
                 }
-
-
-                receiveMessageThread = new Thread(this.ReceiveMessageThread);
-                receiveMessageQueue = Queue.Synchronized(comDataQ);
-                receiveMessageThread.Start();
             }
+
+            if (BaseConfig.SaveLocal)
+            {
+                new LocalDataWatchWindow().Show();
+            }
+
+
+            receiveMessageThread = new Thread(this.ReceiveMessageThread);
+            receiveMessageQueue = Queue.Synchronized(comDataQ);
+            receiveMessageThread.Start();
         }
 
         private void initTimer()
@@ -142,13 +153,9 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
         int openCount = 0;
 
-        /// <summary>
-        /// 打开串口
-        /// </summary>
-        /// <returns></returns>
-        private bool openCom()
+        bool openCom()
         {
-            if (sp == null || (sp.IsOpen == false))
+            if (sp == null || (sp.IsOpen==false))
             {
                 sp = new SerialPort(BaseConfig.COM, BaseConfig.BaudRate);
                 sp.Parity = BaseConfig.Parity;
@@ -173,8 +180,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                         LogUtil.Logger.Error("OpenCom Error");
                         LogUtil.Logger.Error(ex.Message);
                         openCount++;
-                        if (openCount < 5)
-                        {
+                        if (openCount < 5) {
                             openCom();
                         }
                         return false;
@@ -184,9 +190,9 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             return false;
         }
 
-        byte[] g_data = new byte[124];
+        byte[] g_data=new byte[124];
         int g_index = 0;
-        // int count = 0;
+       // int count = 0;
         /// <summary>
         /// 接收到数据
         /// </summary>
@@ -279,7 +285,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             receiveMessageQueue.Enqueue(receivedMessage);
             receivedEvent.Set();
         }
-
+         
         private void ReceiveMessageThread()
         {
             while (true)
@@ -293,19 +299,16 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 receivedEvent.Reset();
             }
         }
-        
-        /// <summary>
-        /// 接收到并处理数据
-        /// </summary>
-        /// <param name="message"></param>
-        private void ReceivedMessage(Message message)
+
+        private void ReceivedMessage(Message message) 
         {
             try
             {
 
                 byte[] data_all = message.Data;
-               
-                if (data_all.Length > 0 && data_all.Length % RETURN_DATA_LENGTH == 0)
+                DateTime current = message.ReceivedTime;
+
+                if (data_all.Length % RETURN_DATA_LENGTH == 0)
                 {
                     int group = data_all.Length / RETURN_DATA_LENGTH;
 
@@ -317,12 +320,113 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                         {
                             data[ggg] = data_all[gg];
                         }
-                        byte[] new_offs = getOnOffState(data);
 
-                        // TODO ToPostData
-                        for (int i = 0; i < new_offs.Length; i++)
+
+                        if (ByteArrayEqual(lastRecord, data))
                         {
-                            this.sensors[i].ChangeTo(new_offs[i]);
+                            // 找到开着的 计时
+                            byte[] ons = getOnOffState(data);
+                            for (int i = 0; i < ons.Length; i++)
+                            {
+                                if (ons[i] == 0)
+                                {
+                                    timeTicker[i] = current;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Dictionary<string, string> CodeValue = new Dictionary<string, string>();
+
+                            // 如果不匹配，发送数据并重置计时器
+                            byte[] old_ons = getOnOffState(lastRecord);
+                            byte[] new_offs = getOnOffState(data);
+                            
+
+                            for (int i = 0; i < old_ons.Length; i++)
+                            {
+                                
+                               // if (old_ons[i] == 1 && new_offs[i] == 0)
+                                if (old_ons[i] == BaseConfig.OnFlag && new_offs[i] == BaseConfig.OffFlag)
+                                {
+                                    if (merix[i] != "X")
+                                    {
+
+                                        int time = (int)(current - timeLastTicker[i]).TotalMilliseconds;
+
+                                        // 记录上一次时间
+                                        timeLastTicker[i] = current;
+
+                                        if (time < BaseConfig.MinFilterMillSecond)
+                                        {
+                                           // if (BaseConfig.WatchNodes.IndexOf(merix[i]) > -1)
+                                                LogUtil.Logger.Info("flash:" + merix[i].ToString() + ":" + time);
+                                            timeLastRecords[i] += time;
+                                            // 说明是信号波动
+                                            // 保持最后的时间不变, 即累计这个波动时间
+                                        }
+                                        else
+                                        {
+                                            // 如果是大于发送时间，就将数据发送到服务器
+                                            if (timeLastRecords[i] < BaseConfig.MinFilterMillSecond)
+                                            {
+                                                timeRecords[i] = timeLastRecords[i] + (int)(current - timeTicker[i]).TotalMilliseconds;
+                                            }
+                                            else
+                                            {
+                                                timeRecords[i] = 0;
+                                                timeRecords[i] = (int)(current - timeTicker[i]).TotalMilliseconds;
+ 
+                                                LogUtil.Logger.Error(i + ":time...................." + timeRecords[i] + ":" + current.ToString() + ":" + timeTicker[i].ToString());
+                                            }
+                                             
+
+                                            if (timeRecords[i] >= BaseConfig.FilterMillSecond)
+                                            {
+                                                if (merix[i] != "X")
+                                                {
+                                                    recordCount[i] += 1;
+
+                                                   // if (BaseConfig.WatchNodes.IndexOf(merix[i]) > -1)
+                                                        LogUtil.Logger.Info("i:" + i + ":code: " + merix[i].ToString() + "count:" + recordCount[i] + ":" + timeLastRecords[i].ToString() + ":" + timeRecords[i].ToString());
+
+                                                   // LogUtil.Logger.Error(i+":time...................." + timeRecords[i]);
+
+                                                    CodeValue.Add(merix[i].ToString(), timeRecords[i].ToString());
+                                                  //  timeRecords[i] = 0;
+                                                }
+                                            }
+                                            // 将计时器设置到当前时间
+                                            timeTicker[i] = current;
+                                            timeLastRecords[i] = 0;
+                                        }
+
+                                    }
+                                }
+                                //else if (old_ons[i] == 1 && new_offs[i] == 1)
+                                else if (old_ons[i] == BaseConfig.OnFlag && new_offs[i] == BaseConfig.OnFlag)
+                                {
+                                    // timeRecords[i] = timeRecords[i] + (int)(current - timeTicker[i]).TotalMilliseconds; //timeRecords[i] + BaseConfig.COMTimerInterval;
+                                }
+                                //else if (old_ons[i] == 0 && new_offs[i] == 1)
+                                else if (old_ons[i] == BaseConfig.OffFlag && new_offs[i] == BaseConfig.OnFlag)
+                                {
+                                    timeTicker[i] = current;
+                                    timeLastTicker[i] = current;
+                                }
+
+                            }
+
+
+                            if (CodeValue.Count > 0)
+                            {
+                               ThreadPool.QueueUserWorkItem(new WaitCallback(postData), CodeValue);
+                            }
+                        }
+
+                        for (int j = 0; j < data.Length; j++)
+                        {
+                            lastRecord[j] = data[j];
                         }
                     }
                 }
@@ -339,17 +443,60 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
                 LogUtil.Logger.Error(ex.Message);
             }
-
+        
         }
 
 
 
-        /// <summary>
-        /// 解析成状态数组
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private byte[] getOnOffState(byte[] data)
+        void postData(object cv)
+        {
+            Dictionary<string, string> CodeValue = (Dictionary<string, string>)cv;
+            List<string> codes = CodeValue.Keys.ToList();
+            List<string> values = CodeValue.Values.ToList();
+            string time = DateTime.Now.ToString();
+            foreach (string node in BaseConfig.WatchNodes)
+            {
+                if (CodeValue.Keys.Contains(node))
+                {
+                    LogUtil.Logger.Info(codes);
+                    break;
+                }
+            }
+            if (BaseConfig.SaveLocal)
+            {
+                SaveLocal(codes, values, time);
+            }
+            else
+            {
+                AppService app = new AppService();
+                ResponseMessage<object> msg = app.SyncPostPlcData(codes, values, time);
+                if (msg != null && msg.http_error)
+                {
+                    SaveLocal(codes, values, time);
+                }
+            }
+        }
+
+        private void SaveLocal(List<string> codes, List<string> values, string time)
+        {
+            // save the data in local
+            string dir = System.IO.Path.Combine("Data\\UnHandle");
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            using (FileStream fs = new FileStream(System.IO.Path.Combine(dir, DateTime.Now.ToString("yyyy-MM-dd HH-mm-sss") + Guid.NewGuid().ToString() + ".txt"),
+ FileMode.Create, FileAccess.Write))
+            {
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    sw.WriteLine(string.Join(",", codes.ToArray()) + ";" + string.Join(",", values.ToArray()) + ";" + time);
+                }
+            }
+        }
+
+        byte[] getOnOffState(byte[] data)
         {
             byte[] state = new byte[CONTROLS];
             for (int i = 0; i < state.Length; i++)
@@ -401,9 +548,6 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             SecndCmd();
         }
 
-        /// <summary>
-        /// 探测com
-        /// </summary>
         private void DetectCom()
         {
             try
@@ -420,20 +564,17 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             }
         }
 
-        private void StartCmd()
+        private void StartCmd() 
         {
             Thread cmdThread = new Thread(SecndCmd);
             cmdThread.Start();
         }
 
-        /// <summary>
-        /// 发送COM的命令
-        /// </summary>
         private void SecndCmd()
         {
             try
             {
-
+               
                 byte[] cmd = null;
                 if (BaseConfig.FXType.Equals("3U"))
                 {
@@ -445,7 +586,11 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 }
                 if (cmd != null)
                 {
+                    // this.Dispatcher.Invoke(DispatcherPriority.Normal, (System.Windows.Forms.MethodInvoker)delegate()
+                    //    {
                     sp.Write(cmd, 0, cmd.Length);
+                    //  });
+                  //  LogUtil.Logger.Info("[Send CMD]" + ToHexString(cmd));
                 }
                 else
                 {
@@ -459,11 +604,6 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             }
         }
 
-        /// <summary>
-        /// 关闭窗口
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
 
@@ -497,7 +637,19 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         }
 
 
-        private string ToHexString(byte[] bytes)
+        private bool ByteArrayEqual(byte[] a1, byte[] a2) {
+            if (a1 == null || a2 == null)
+                return false;
+            if (a1.Length != a2.Length) 
+                return false;
+            for (int i = 0; i < a1.Length; i++) {
+                if (a1[i] != a2[i])
+                    return false;
+            }
+            return true;
+        }
+
+        private  string ToHexString(byte[] bytes) // 0xae00cf => "AE00CF"
         {
             string hexString = string.Empty;
             if (bytes != null)
@@ -506,7 +658,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
                 for (int i = 0; i < bytes.Length; i++)
                 {
-                    strB.Append(bytes[i].ToString("X2") + " ");
+                    strB.Append(bytes[i].ToString("X2")+" ");
                 }
 
                 hexString = strB.ToString().TrimEnd();
