@@ -6,8 +6,9 @@ using System.Threading;
 using Brilliantech.ClearInsight.Framework.Config;
 using Brilliantech.ClearInsight.Framework;
 using Brilliantech.Framwork.Utils.LogUtil;
+using System.IO;
 
-namespace Brilliantech.ClearInsight.AppCenter.PLC
+namespace Brilliantech.ClearInsight.Framework
 {
     public class Sensor
     {
@@ -25,14 +26,18 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             this.OnFlagTime = DateTime.Now;
             this.OffFlagMS = 0;
             this.OnFlagTime = DateTime.Now;
+
+            this.OnFlagCount = 0;
+            this.OffFlagCount = 0;
         }
-        
+
         public Sensor ChangeTo(byte toFlag)
         {
             DateTime currentTime = DateTime.Now;
 
             if (this.TrigOff)
             {
+                // ON-OFF
                 if (this.CurrentFlag == this.OnFlag && toFlag == this.OffFlag)
                 {
                     int flashTime = (int)(currentTime - this.OnFlagTime).TotalMilliseconds;
@@ -50,10 +55,11 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                             // trigger on-off up
                             Dictionary<string, string> cv = new Dictionary<string, string>();
                             cv.Add("kpi_code", ApiConfig.CycleTimeKpiCode);
-                            cv.Add("code", this.Code);
-                            cv.Add("value", this.OnFlagMS.ToString());
-
-                            LogUtil.Logger.Info("code:"+this.Code+"..........value:"+this.OnFlagMS);
+                            cv.Add("code", this.OffFlagCode);
+                           cv.Add("value", this.OnFlagMS.ToString());
+                          //  cv.Add("value", new Random().Next(30000).ToString());
+                            this.OffFlagCount++;
+                            LogUtil.Logger.Info("[off].....code:" + this.Code + "..........value:" + this.OnFlagMS + "...........count:" + this.OffFlagCount);
 
                             ThreadPool.QueueUserWorkItem(new WaitCallback(PostData), cv);
                         }
@@ -68,6 +74,47 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 else if (this.CurrentFlag == this.OffFlag && toFlag == this.OnFlag)
                 {
                     this.OnFlagTime = currentTime;
+                    this.OnFlagMS = 0;
+                }
+            }
+
+            if (this.TrigOn)
+            {
+                //OFF-ON
+                if (this.CurrentFlag == this.OffFlag && toFlag == this.OnFlag)
+                {
+                    int flashTime = (int)(currentTime - this.OffFlagTime).TotalMilliseconds;
+                    if (flashTime < this.MaxFlashMS)
+                    {
+                        this.OffFlagMS += flashTime;
+                    }
+                    else
+                    {
+                        this.OffFlagMS = flashTime;
+                        if (this.OffFlagMS >= this.MinUpMS && this.Code != "X")
+                        {
+                            Dictionary<string, string> cv = new Dictionary<string, string>();
+                            cv.Add("kpi_code", ApiConfig.MovingTimeKpiCode);
+                            cv.Add("code", this.OnFlagCode);
+                            cv.Add("value", this.OffFlagMS.ToString());
+                            //cv.Add("value", new Random().Next(30000).ToString());
+                            this.OnFlagCount++;
+                            LogUtil.Logger.Info("[on].....code:" + this.Code + "..........value:" + this.OffFlagMS + "...........count:" + this.OnFlagCount);
+
+                            ThreadPool.QueueUserWorkItem(new WaitCallback(PostData), cv);
+                        }
+                        this.OffFlagTime = currentTime;
+                        this.OnFlagMS = 0;
+                    }
+
+                }
+                else if (this.CurrentFlag == this.OffFlag && toFlag == this.OffFlag)
+                {
+                    // do nothing
+                }
+                else if (this.CurrentFlag == this.OnFlag && toFlag == this.OffFlag)
+                {
+                    this.OffFlagTime = currentTime;
                     this.OnFlagMS = 0;
                 }
             }
@@ -88,10 +135,31 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             app.SyncPostOnOffData(kpiCode, code, value, time);
         }
 
+        public static void SaveLocal(string kpiCode, string codes, string values, string time)
+        {
+            // save the data in local
+            string dir = System.IO.Path.Combine("Data\\UnHandle");
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            using (FileStream fs = new FileStream(System.IO.Path.Combine(dir, DateTime.Now.ToString("yyyy-MM-dd HH-mm-sss") + Guid.NewGuid().ToString() + ".txt"),
+ FileMode.Create, FileAccess.Write))
+            {
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    sw.WriteLine(kpiCode + ";" + codes + ";" + values + ";" + time);
+                }
+            }
+        }
 
         public int Id { get; set; }
 
         public string Code { get; set; }
+
+        public string OnFlagCode { get; set; }
+        public string OffFlagCode { get; set; }
 
         /// <summary>
         /// 开的状态，默认为1
@@ -127,6 +195,11 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         public int OnFlagMS { get; set; }
 
         /// <summary>
+        /// 开的次数
+        /// </summary>
+        public int OnFlagCount { get; set; }
+
+        /// <summary>
         /// 最近一次关的时间
         /// </summary>
         public DateTime OffFlagTime { get; set; }
@@ -134,6 +207,11 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         /// 持续关的时间
         /// </summary>
         public int OffFlagMS { get; set; }
+
+        /// <summary>
+        /// 关的次数
+        /// </summary>
+        public int OffFlagCount { get; set; }
 
         /// <summary>
         /// 最大闪动毫秒数

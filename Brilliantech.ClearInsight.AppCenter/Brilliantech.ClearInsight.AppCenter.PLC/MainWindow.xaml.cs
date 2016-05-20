@@ -95,13 +95,25 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             {
                 for (int i = 0; i < BaseConfig.Sensor.Length; i++)
                 {
-                    sensors.Add(new Sensor()
+                    Sensor s = new Sensor()
                     {
+                        Id = i,
                         Code = BaseConfig.Sensor[i],
+                        OffFlagCode = BaseConfig.Sensor[i],
                         OnFlag = BaseConfig.OnFlag,
                         OffFlag = BaseConfig.OffFlag,
                         IsEmergency = false
-                    });
+                    };
+                    if (i > 0)
+                    {
+                        s.OnFlagCode = BaseConfig.Sensor[i - 1];
+                    }
+                    else
+                    {
+                        s.TrigOn = false;
+                    }
+
+                    sensors.Add(s);
                 }
 
 
@@ -118,10 +130,10 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
 
 
-                if (BaseConfig.SaveLocal)
-                {
+                //if (BaseConfig.SaveLocal)
+                //{
                     new LocalDataWatchWindow().Show();
-                }
+               // }
 
 
                 receiveMessageThread = new Thread(this.ReceiveMessageThread);
@@ -235,7 +247,6 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                         g_index = 0;
                         if (data_all.Length % RETURN_DATA_LENGTH == 0 && data_all.Length > 0)
                         {
-
                             StartReceivedMessage(
                                 new Message()
                                 {

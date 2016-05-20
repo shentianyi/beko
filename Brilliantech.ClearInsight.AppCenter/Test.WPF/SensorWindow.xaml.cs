@@ -71,11 +71,18 @@ namespace Test.WPF
         }
 
         bool open = false;
-
+        int i = 0;
+        int j = 0;
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             if (open)
             {
+
+                j++;
+                this.Dispatcher.Invoke(DispatcherPriority.Normal, (System.Windows.Forms.MethodInvoker)delegate()
+                {
+                    OffCountLab.Content = j;
+                });
                 StartSendMessage(closeCmd);
                 //sp.Write(closeCmd, 0, closeCmd.Length);
             }
@@ -84,6 +91,12 @@ namespace Test.WPF
                 StartSendMessage(openCmd);
               //  sp.Write(openCmd, 0, openCmd.Length);
             }
+
+            i += 1;
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (System.Windows.Forms.MethodInvoker)delegate()
+            {
+                CountLab.Content = i;
+            });
 
             open = !open;
         }
@@ -109,8 +122,7 @@ namespace Test.WPF
 
             }
         }
-
-        int i = 0;
+         
         private void SendMessage(byte[] data)
         {
 
@@ -120,11 +132,7 @@ namespace Test.WPF
              
 
                 sp.Write(data, 0, data.Length);   
-                i += 1;
-                this.Dispatcher.Invoke(DispatcherPriority.Normal, (System.Windows.Forms.MethodInvoker)delegate()
-                {
-                    CountLab.Content = i;
-                });
+              
             }
             catch (Exception e) {
                 MessageBox.Show(e.Message);

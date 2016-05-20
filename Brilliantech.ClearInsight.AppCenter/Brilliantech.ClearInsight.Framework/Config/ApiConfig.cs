@@ -28,6 +28,7 @@ namespace Brilliantech.ClearInsight.Framework.Config
 
 
                 CycleTimeKpiCode = config.Get("CycleTimeKpiCode");
+                MovingTimeKpiCode = config.Get("MovingTimeKpiCode");
             }
             catch (Exception e)
             {

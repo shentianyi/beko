@@ -15,13 +15,14 @@ namespace Brilliantech.ClearInsight.Framework
     public class AppService
     {
 
-        public ResponseMessage<object> PostPlcData(List<string> codes, List<string> values,string time)
+        public ResponseMessage<object> PostPlcData(string kpiCode,List<string> codes, List<string> values,string time)
         {
             var msg = new ResponseMessage<object>() { http_error=false};
             try
             {
                 var client = new ApiClient();
                 var req = client.GenRequest(ApiConfig.PlcOnOffPostAction, Method.POST);
+                req.AddParameter("kpi_code", kpiCode);
                 req.AddParameter("codes", string.Join(",", codes.ToArray()));
                 req.AddParameter("values", string.Join(",", values.ToArray()));
                 req.AddParameter("time", time);

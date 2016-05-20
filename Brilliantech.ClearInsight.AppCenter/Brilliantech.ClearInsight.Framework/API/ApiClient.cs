@@ -37,17 +37,35 @@ namespace Brilliantech.ClearInsight.Framework.API
 
         public void ExecuteSync(IRestRequest request)
         {
-            request.Timeout = 1000000000;
-            genClient().ExecuteAsync(request,null);
-           // genClient().ExecuteAsync(request,response=>{
-                //try
-                //{
-                //    responseHandler(response);
-                //}
-                //catch(Exception e) {
-                //    string ss = e.Message;
-                //}
-           // });
+            //try
+            //{
+            //    request.Timeout = 1000000000;
+            //    genClient().ExecuteAsync(request, null);
+            //}
+            //catch (Exception ex) {
+            //    string s = ex.Message;
+            //}
+            genClient().ExecuteAsync(request, response =>
+            {
+                try
+                {
+                    responseHandler(response);
+                }
+                catch (Exception e)
+                {
+                    var req = request;
+                    Parameter  kpiCodePar = req.Parameters.Where(p => p.Name.Equals("kpi_code")).FirstOrDefault();
+                    Parameter codePar = req.Parameters.Where(p => p.Name.Equals("codes")).FirstOrDefault();
+                    Parameter valuePar = req.Parameters.Where(p => p.Name.Equals("values")).FirstOrDefault();
+                    Parameter timePar = req.Parameters.Where(p => p.Name.Equals("time")).FirstOrDefault();
+                    if (kpiCodePar != null && codePar != null && valuePar != null && timePar != null)
+                    {
+                        Sensor.SaveLocal(kpiCodePar.Value.ToString(),
+                           codePar.Value.ToString(),
+                           valuePar.Value.ToString(), timePar.Value.ToString());
+                    } 
+                }
+            });
         }
 
         private RestClient genClient()
