@@ -96,7 +96,7 @@ namespace Brilliantech.ClearInsight.Framework
                             Dictionary<string, string> cv = new Dictionary<string, string>();
                             cv.Add("kpi_code", ApiConfig.MovingTimeKpiCode);
                             cv.Add("code", this.OnFlagCode);
-                            cv.Add("value", this.OffFlagMS.ToString());
+                              9cv.Add("value", this.OffFlagMS.ToString());
                             //cv.Add("value", new Random().Next(30000).ToString());
                             this.OnFlagCount++;
                             LogUtil.Logger.Info("[on].....code:" + this.Code + "..........value:" + this.OffFlagMS + "...........count:" + this.OnFlagCount);
