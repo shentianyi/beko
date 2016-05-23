@@ -93,29 +93,29 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
             }
             if (RETURN_DATA_LENGTH > 0)
             {
-                for (int i = 0; i < BaseConfig.Sensor.Length; i++)
-                {
-                    Sensor s = new Sensor()
-                    {
-                        Id = i,
-                        Code = BaseConfig.Sensor[i],
-                        OffFlagCode = BaseConfig.Sensor[i],
-                        OnFlag = BaseConfig.OnFlag,
-                        OffFlag = BaseConfig.OffFlag,
-                        IsEmergency = false
-                    };
-                    if (i > 0)
-                    {
-                        s.OnFlagCode = BaseConfig.Sensor[i - 1];
-                    }
-                    else
-                    {
-                        s.TrigOn = false;
-                    }
+                //for (int i = 0; i < BaseConfig.Sensor.Length; i++)
+                //{
+                //    Sensor s = new Sensor()
+                //    {
+                //        Id = i,
+                //        Code = BaseConfig.Sensor[i],
+                //        OffFlagCode = BaseConfig.Sensor[i],
+                //        OnFlag = BaseConfig.OnFlag,
+                //        OffFlag = BaseConfig.OffFlag,
+                //        IsEmergency = false
+                //    };
+                //    if (i > 0)
+                //    {
+                //        s.OnFlagCode = BaseConfig.Sensor[i - 1];
+                //    }
+                //    else
+                //    {
+                //        s.TrigOn = false;
+                //    }
+                //    sensors.Add(s);
+                //}
 
-                    sensors.Add(s);
-                }
-
+                this.sensors = BaseConfig.Sensors;
 
 
                 if (openCom())
@@ -523,6 +523,16 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 hexString = strB.ToString().TrimEnd();
             }
             return hexString;
+        }
+
+        /// <summary>
+        /// 打开配置界面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            new SettingWindow().Show();
         }
     }
 }

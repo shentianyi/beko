@@ -22,9 +22,9 @@ namespace Test.WPF
     /// </summary>
     public partial class SensorWindow : Window
     {
-        static byte[] closeCmd = new byte[] { 0x02, 0x30, 0x30, 0x30, 0x33, 0x30, 0x36, 0x31, 0x36, 0x46, 0x42, 0x32, 0x32, 0x03, 0x39, 0x34 };
+          byte[] closeCmd = new byte[] { 0x02, 0x30, 0x30, 0x30, 0x33, 0x30, 0x36, 0x31, 0x36, 0x46, 0x42, 0x32, 0x32, 0x03, 0x39, 0x34 };
 
-        static byte[] openCmd = new byte[] { 0x02, 0x30, 0x45, 0x30, 0x33, 0x30, 0x36, 0x31, 0x36, 0x46, 0x42, 0x32, 0x32, 0x03, 0x39, 0x34 };
+          byte[] openCmd = new byte[] { 0x02, 0x30, 0x45, 0x30, 0x33, 0x30, 0x36, 0x31, 0x36, 0x46, 0x42, 0x32, 0x32, 0x03, 0x39, 0x34 };
 
         SerialPort sp;
 
@@ -77,7 +77,6 @@ namespace Test.WPF
         {
             if (open)
             {
-
                 j++;
                 this.Dispatcher.Invoke(DispatcherPriority.Normal, (System.Windows.Forms.MethodInvoker)delegate()
                 {
@@ -119,22 +118,17 @@ namespace Test.WPF
                 }
                 sendEvent.WaitOne();
                 sendEvent.Reset();
-
             }
         }
-         
+
         private void SendMessage(byte[] data)
         {
-
-           // Thread.Sleep(100);
             try
             {
-             
-
-                sp.Write(data, 0, data.Length);   
-              
+                sp.Write(data, 0, data.Length);
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 MessageBox.Show(e.Message);
             }
         }
@@ -142,6 +136,25 @@ namespace Test.WPF
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
+            if (sp == null) {
+                button1_Click(null, null);
+            }
+            int type = comboBox1.SelectedIndex;
+            if (type == 0)
+            {
+                closeCmd = new byte[] { 0x02, 0x30, 0x30, 0x30, 0x33, 0x03, 0x39, 0x34 };
+
+                openCmd = new byte[] { 0x02, 0x30, 0x45, 0x30, 0x33, 0x03, 0x39, 0x34 };
+            }
+            else if (type == 1)
+            {
+                closeCmd = new byte[] { 0x02, 0x30, 0x30, 0x30, 0x33, 0x30, 0x36, 0x31, 0x36, 0x46, 0x42, 0x32, 0x32, 0x03, 0x39, 0x34 };
+
+                openCmd = new byte[] { 0x02, 0x30, 0x45, 0x30, 0x33, 0x30, 0x36, 0x31, 0x36, 0x46, 0x42, 0x32, 0x32, 0x03, 0x39, 0x34 };
+            }
+            else { 
+             
+            }
             open = false;
             i = 0;
             timer.Enabled = true;

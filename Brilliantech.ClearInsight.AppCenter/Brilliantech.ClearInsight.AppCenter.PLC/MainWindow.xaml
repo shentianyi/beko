@@ -6,5 +6,6 @@
         <Label Content="PLC 数据采集,请勿关闭!" Height="69" 
                HorizontalAlignment="Left" Margin="83,137,0,0" Name="label1"  FontSize="30"
                VerticalAlignment="Top" Width="332" />
+        <Button Content="Setting" Height="34" HorizontalAlignment="Left" Margin="431,0,0,0" Name="button1" VerticalAlignment="Top" Width="72" Click="button1_Click" />
     </Grid>
 </Window>

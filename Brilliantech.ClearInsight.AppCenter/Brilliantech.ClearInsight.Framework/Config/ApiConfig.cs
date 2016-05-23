@@ -29,6 +29,7 @@ namespace Brilliantech.ClearInsight.Framework.Config
 
                 CycleTimeKpiCode = config.Get("CycleTimeKpiCode");
                 MovingTimeKpiCode = config.Get("MovingTimeKpiCode");
+                ScramTimeKpiCode = config.Get("ScramTimeKpiCode");
             }
             catch (Exception e)
             {
@@ -66,5 +67,6 @@ namespace Brilliantech.ClearInsight.Framework.Config
         public static string ConfirmPlanAction { get; set; }
         public static string CycleTimeKpiCode { get; set; }
         public static string MovingTimeKpiCode { get; set; }
+        public static string ScramTimeKpiCode { get; set; }
     }
 }

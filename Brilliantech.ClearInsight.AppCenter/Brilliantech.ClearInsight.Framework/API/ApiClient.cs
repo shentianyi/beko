@@ -39,7 +39,7 @@ namespace Brilliantech.ClearInsight.Framework.API
         {
             //try
             //{
-            //    request.Timeout = 1000000000;
+            request.Timeout = 1000000000;
             //    genClient().ExecuteAsync(request, null);
             //}
             //catch (Exception ex) {
@@ -54,7 +54,7 @@ namespace Brilliantech.ClearInsight.Framework.API
                 catch (Exception e)
                 {
                     var req = request;
-                    Parameter  kpiCodePar = req.Parameters.Where(p => p.Name.Equals("kpi_code")).FirstOrDefault();
+                    Parameter kpiCodePar = req.Parameters.Where(p => p.Name.Equals("kpi_code")).FirstOrDefault();
                     Parameter codePar = req.Parameters.Where(p => p.Name.Equals("codes")).FirstOrDefault();
                     Parameter valuePar = req.Parameters.Where(p => p.Name.Equals("values")).FirstOrDefault();
                     Parameter timePar = req.Parameters.Where(p => p.Name.Equals("time")).FirstOrDefault();
@@ -63,7 +63,7 @@ namespace Brilliantech.ClearInsight.Framework.API
                         Sensor.SaveLocal(kpiCodePar.Value.ToString(),
                            codePar.Value.ToString(),
                            valuePar.Value.ToString(), timePar.Value.ToString());
-                    } 
+                    }
                 }
             });
         }

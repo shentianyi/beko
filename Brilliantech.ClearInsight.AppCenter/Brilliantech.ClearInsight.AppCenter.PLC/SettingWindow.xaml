@@ -1,0 +1,35 @@
+﻿<Window x:Class="Brilliantech.ClearInsight.AppCenter.PLC.SettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SettingWindow" Height="500" Width="700" Loaded="Window_Loaded">
+ 
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
+        <ScrollViewer  Grid.Column="0" Grid.Row="0">
+             <Grid Name="SensorGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+        </Grid>
+        </ScrollViewer>
+        <StackPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,20,0"></StackPanel>
+        <Label Content="Restart The Application after Save!" Grid.Row="1" Height="28" HorizontalAlignment="Left" Margin="456,18,0,0" Name="label1" VerticalAlignment="Top" Foreground="#FFDB4343" FontWeight="Bold" />
+        <Button Content="Save!" Height="46" Name="SaveBtn" Width="91" Click="SaveBtn_Click" Margin="340,0,247,0" Grid.Row="1" FontWeight="Bold" />
+    </Grid> 
+</Window>

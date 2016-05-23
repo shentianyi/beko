@@ -15,24 +15,35 @@ namespace TEST.Console1
 
         static void Main(string[] args)
         {
-            DateTime st = DateTime.Now;
+            string s = "";
+            for (var i = 0; i < 16; i++) {
+                if (i < 10)
+                {
+                    s += (i + "#" + "1N-C0" + (i + 1) + ",true,true,false;");
+                }
+                else {
+                    s += (i + "#" + "1N-C" + (i + 1) + ",true,true,false;");
+                }
+            }
+            Console.WriteLine(s);
+           // DateTime st = DateTime.Now;
 
-           // byte[] data=new byte[RETURN_DATA_LENGTH]{2, 70, 70, 48, 48, 48, 48, 48, 48, 48, 48, 48, 32, 3, 54, 70};
+           //// byte[] data=new byte[RETURN_DATA_LENGTH]{2, 70, 70, 48, 48, 48, 48, 48, 48, 48, 48, 48, 32, 3, 54, 70};
 
-            byte[] data = new byte[RETURN_DATA_LENGTH] { 2, 70, 70, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 3, 54, 70 };
-            byte[] state=new byte[CONTROLS];
+           // byte[] data = new byte[RETURN_DATA_LENGTH] { 2, 70, 70, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 3, 54, 70 };
+           // byte[] state=new byte[CONTROLS];
 
-           state = getOnOffState(data);
-             Thread.Sleep(1000);
-            DateTime et = DateTime.Now;
+           //state = getOnOffState(data);
+           //  Thread.Sleep(1000);
+           // DateTime et = DateTime.Now;
            
           
            
 
-            TimeSpan ts = et - st;
-            Console.WriteLine(ts.TotalMilliseconds);
-            Console.WriteLine((int)(et - st).TotalMilliseconds);
-            Console.WriteLine((int)ts.Milliseconds);
+           // TimeSpan ts = et - st;
+           // Console.WriteLine(ts.TotalMilliseconds);
+           // Console.WriteLine((int)(et - st).TotalMilliseconds);
+           // Console.WriteLine((int)ts.Milliseconds);
 
             Console.Read();
         }

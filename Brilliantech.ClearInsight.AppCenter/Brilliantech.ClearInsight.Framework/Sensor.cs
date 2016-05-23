@@ -12,6 +12,11 @@ namespace Brilliantech.ClearInsight.Framework
 {
     public class Sensor
     {
+        public delegate void FlagChangedEventHandler(Sensor sensor,byte toFlag);
+        public event FlagChangedEventHandler FlagChanged;
+        public FlagChangedEventHandler FlagChangedDelegate;
+
+
         public Sensor()
         {
             this.OnFlag = 1;
@@ -29,17 +34,19 @@ namespace Brilliantech.ClearInsight.Framework
 
             this.OnFlagCount = 0;
             this.OffFlagCount = 0;
+            
         }
 
         public Sensor ChangeTo(byte toFlag)
         {
             DateTime currentTime = DateTime.Now;
-
+          
             if (this.TrigOff)
             {
                 // ON-OFF
                 if (this.CurrentFlag == this.OnFlag && toFlag == this.OffFlag)
                 {
+
                     int flashTime = (int)(currentTime - this.OnFlagTime).TotalMilliseconds;
 
                     if (flashTime < this.MaxFlashMS)
@@ -56,8 +63,8 @@ namespace Brilliantech.ClearInsight.Framework
                             Dictionary<string, string> cv = new Dictionary<string, string>();
                             cv.Add("kpi_code", ApiConfig.CycleTimeKpiCode);
                             cv.Add("code", this.OffFlagCode);
-                           cv.Add("value", this.OnFlagMS.ToString());
-                          //  cv.Add("value", new Random().Next(30000).ToString());
+                           // cv.Add("value", this.OnFlagMS.ToString());
+                             cv.Add("value", new Random().Next(30000).ToString());
                             this.OffFlagCount++;
                             LogUtil.Logger.Info("[off].....code:" + this.Code + "..........value:" + this.OnFlagMS + "...........count:" + this.OffFlagCount);
 
@@ -93,10 +100,11 @@ namespace Brilliantech.ClearInsight.Framework
                         this.OffFlagMS = flashTime;
                         if (this.OffFlagMS >= this.MinUpMS && this.Code != "X")
                         {
+
                             Dictionary<string, string> cv = new Dictionary<string, string>();
                             cv.Add("kpi_code", ApiConfig.MovingTimeKpiCode);
                             cv.Add("code", this.OnFlagCode);
-                              9cv.Add("value", this.OffFlagMS.ToString());
+                            cv.Add("value", this.OffFlagMS.ToString());
                             //cv.Add("value", new Random().Next(30000).ToString());
                             this.OnFlagCount++;
                             LogUtil.Logger.Info("[on].....code:" + this.Code + "..........value:" + this.OffFlagMS + "...........count:" + this.OnFlagCount);
@@ -118,7 +126,14 @@ namespace Brilliantech.ClearInsight.Framework
                     this.OnFlagMS = 0;
                 }
             }
+            //触发事件
+            if (this.CurrentFlag != toFlag) {
 
+                if (this.FlagChanged != null)
+                {
+                    this.FlagChanged(this,toFlag);
+                }
+            }
             this.CurrentFlag = toFlag;
             return null;
         }
@@ -171,13 +186,14 @@ namespace Brilliantech.ClearInsight.Framework
         public byte OffFlag { get; set; }
 
         /// <summary>
-        /// 是否触发开
+        /// 是否触发开,MovingTime
         /// </summary>
         public bool TrigOn { get; set; }
         /// <summary>
-        /// 是否触发关
+        /// 是否触发关,CycleTime
         /// </summary>
         public bool TrigOff { get; set; }
+
 
         /// <summary>
         /// 当前状态 开/关
