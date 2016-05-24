@@ -18,20 +18,7 @@ namespace Brilliantech.ClearInsight.Framework.Config
                 config = new ConfigUtil("Base", "Ini/base.ini");
 
                 FXType = config.Get("FXType");
-                //if (FXType != "Q02U")
-                //{
-                //    Sensor = config.Get("Sensor").Split(',');
-                //}
-                //else
-                //{
-                //    string[] sensors = config.Get("Sensor").Split(',');
-                //    Sensor = new string[sensors.Length];
 
-                //    for (int i = 0; i < sensors.Length; i++)
-                //    {
-                //        Sensor[i] = sensors[i].Split('#')[1];
-                //    }
-                //}
                 List<Sensor> sensors = new List<Sensor>(); 
                 string[] s=config.Get("Sensor").Split('$');
                 for (int i=0;i<s.Length;i++) {
@@ -98,7 +85,7 @@ namespace Brilliantech.ClearInsight.Framework.Config
         }
 
         public static string FXType { get; set; }
-      //  public static string[] Sensor { get; set; }
+
         public static List<Sensor> Sensors { get; set; }
 
 
@@ -120,5 +107,16 @@ namespace Brilliantech.ClearInsight.Framework.Config
         public static bool SaveLocal { get; set; }
         public static byte OnFlag { get; set; }
         public static byte OffFlag { get; set; }
+
+        public static void SaveSensors(List<Sensor> sensors) {
+            string s = string.Empty;
+            for (int i = 0; i < sensors.Count; i++)
+            {
+                s += string.Format("{0}#{1},{2},{3},{4}$", i, sensors[i].Code, sensors[i].TrigOff, sensors[i].TrigOn, sensors[i].IsEmergency);
+            }
+            s = s.TrimEnd('$');
+            config.Set("Sensor", s);
+            config.Save();
+        }
     }
 }

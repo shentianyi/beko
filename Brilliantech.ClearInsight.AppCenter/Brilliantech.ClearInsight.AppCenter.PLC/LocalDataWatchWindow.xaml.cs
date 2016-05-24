@@ -107,7 +107,14 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                            string[] data= sr.ReadLine().Split(';');
                            AppService app = new AppService();
                            string time = DateTime.Now.ToString();
-                           ResponseMessage<object> msg = app.PostPlcData(data[0],data[1].Split(',').ToList(), data[2].Split(',').ToList(), data[3]);
+                           ResponseMessage<object> msg = null;
+                           if (data.Length == 4)
+                           {
+                               msg = app.PostPlcData(data[0], data[1].Split(',').ToList(), data[2].Split(',').ToList(), data[3]);
+                           }
+                           else if (data.Length == 6) {
+                               msg = app.PostPlcData(data[0], data[1].Split(',').ToList(), data[2].Split(',').ToList(), data[3], data[4], data[5]);
+                           }
                            canMoveFile = !msg.http_error;
 
                             //sw.WriteLine(string.Join(",", codes.ToArray()) + ";" + string.Join(",", values.ToArray()) + ";" + time);

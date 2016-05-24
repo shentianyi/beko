@@ -59,7 +59,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
              
                 sp.Children.Add(button);
 
-                CheckBox enableCB = new CheckBox() { Content = "Enabled", IsChecked = !sensor.Code.Equals("#"), Margin = new Thickness(0, 5, 0, 0), Tag = "enable_" + i };
+                CheckBox enableCB = new CheckBox() { Content = "Enabled", IsChecked = !sensor.Code.Equals("X"), Margin = new Thickness(0, 5, 0, 0), Tag = "enable_" + i };
 
                 sp.Children.Add(enableCB);
 
@@ -77,16 +77,59 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
          
                 sp.Children.Add(movingCB);
 
-                CheckBox scramCB = new CheckBox() { Content = "Scram", IsChecked = sensor.IsEmergency, Margin = new Thickness(0, 5, 0, 0), Tag = "scram_" + i };
-         
-                sp.Children.Add(scramCB);
 
+                cycleCB.Checked += new RoutedEventHandler(cycleCB_Checked);
+                movingCB.Checked += new RoutedEventHandler(cycleCB_Checked);
+
+                CheckBox scramCB = new CheckBox() { Content = "Scram", IsChecked = sensor.IsEmergency, Margin = new Thickness(0, 5, 0, 0), Tag = "scram_" + i };
+              
+                sp.Children.Add(scramCB);
+                scramCB.Checked += new RoutedEventHandler(scramCB_Checked);
 
                 sp.SetValue(Grid.RowProperty, row);
                 sp.SetValue(Grid.ColumnProperty, col);
                 SensorGrid.Children.Add(sp);
 
             }
+        }
+
+        void cycleCB_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckBox cb = sender as CheckBox;
+            string tag = cb.Tag.ToString().Split('_')[1];
+
+            CheckBox scramCB = findByTag("scram_" + tag) as CheckBox;
+            scramCB.IsChecked = false;
+        }
+
+        void scramCB_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckBox cb = sender as CheckBox;
+            string tag = cb.Tag.ToString().Split('_')[1];
+
+            CheckBox cycleCB = findByTag("cycle_" + tag) as CheckBox;
+            cycleCB.IsChecked = false;
+
+            CheckBox movingCB = findByTag("moving_" + tag) as CheckBox;
+            movingCB.IsChecked = false;
+        }
+
+        Control findByTag(string tag)
+        {
+            foreach (var sp in SensorGrid.Children)
+            {
+                if (sp is StackPanel)
+                {
+                    foreach (var c in (sp as StackPanel).Children)
+                    {
+                        if ((c as Control).Tag.ToString().Equals(tag))
+                        {
+                            return c as Control;
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -126,8 +169,8 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            List<Sensor> sensors=new List<Sensor>();
-            string tag=string.Empty;
+            List<Sensor> sensors = new List<Sensor>();
+            string tag = string.Empty;
             foreach (var sp in SensorGrid.Children)
             {
                 if (sp is StackPanel)
@@ -187,7 +230,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                     {
                         Sensor sensor = new Sensor()
                         {
-                            Code = "#",
+                            Code = "X",
                             TrigOff = false,
                             TrigOn = false,
                             IsEmergency = false
@@ -197,11 +240,8 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 }
             }
 
-            string s=string.Empty;
-
-
-
+            BaseConfig.SaveSensors(sensors);
+            MessageBox.Show("Save Success! Please Restart the Application!", "Tip", MessageBoxButton.OK, MessageBoxImage.Information);
         }
-         
     }
 }

@@ -15,7 +15,7 @@ namespace Brilliantech.ClearInsight.Framework
     public class AppService
     {
 
-        public ResponseMessage<object> PostPlcData(string kpiCode,List<string> codes, List<string> values,string time)
+        public ResponseMessage<object> PostPlcData(string kpiCode, List<string> codes, List<string> values, string time, string from_time = null, string to_time = null)
         {
             var msg = new ResponseMessage<object>() { http_error=false};
             try
@@ -26,7 +26,11 @@ namespace Brilliantech.ClearInsight.Framework
                 req.AddParameter("codes", string.Join(",", codes.ToArray()));
                 req.AddParameter("values", string.Join(",", values.ToArray()));
                 req.AddParameter("time", time);
-
+                if (from_time != null && to_time != null)
+                {
+                    req.AddParameter("from_time", from_time);
+                    req.AddParameter("to_time", to_time);
+                }
                 //  client.ExecuteSync(req);
                 var res = client.Execute(req);
                 msg = JsonUtil.parse<ResponseMessage<object>>(res.Content);
@@ -57,7 +61,7 @@ namespace Brilliantech.ClearInsight.Framework
         }
 
 
-        public ResponseMessage<object> SyncPostOnOffData(string kpiCode,string code, string value, string time)
+        public ResponseMessage<object> SyncPostOnOffData(string kpiCode,string code, string value, string time,string from_time=null,string to_time=null)
         {
             var msg = new ResponseMessage<object>() { http_error = false };
             try
@@ -68,7 +72,10 @@ namespace Brilliantech.ClearInsight.Framework
                 req.AddParameter("codes", code);
                 req.AddParameter("values",  value);
                 req.AddParameter("time", time);
-
+                if (from_time != null && to_time != null) {
+                    req.AddParameter("from_time", from_time);
+                    req.AddParameter("to_time", to_time);
+                }
                 client.ExecuteSync(req);
                 //var res = client.Execute(req);
                 // msg = JsonUtil.parse<ResponseMessage<object>>(res.Content);

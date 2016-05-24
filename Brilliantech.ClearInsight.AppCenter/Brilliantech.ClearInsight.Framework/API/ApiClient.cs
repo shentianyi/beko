@@ -39,7 +39,7 @@ namespace Brilliantech.ClearInsight.Framework.API
         {
             //try
             //{
-            request.Timeout = 1000000000;
+            request.Timeout = 180000;
             //    genClient().ExecuteAsync(request, null);
             //}
             //catch (Exception ex) {
@@ -58,11 +58,23 @@ namespace Brilliantech.ClearInsight.Framework.API
                     Parameter codePar = req.Parameters.Where(p => p.Name.Equals("codes")).FirstOrDefault();
                     Parameter valuePar = req.Parameters.Where(p => p.Name.Equals("values")).FirstOrDefault();
                     Parameter timePar = req.Parameters.Where(p => p.Name.Equals("time")).FirstOrDefault();
+                    Parameter fromTimePar = req.Parameters.Where(p => p.Name.Equals("from_time")).FirstOrDefault();
+                    Parameter toTimePar = req.Parameters.Where(p => p.Name.Equals("to_time")).FirstOrDefault();
+
                     if (kpiCodePar != null && codePar != null && valuePar != null && timePar != null)
                     {
-                        Sensor.SaveLocal(kpiCodePar.Value.ToString(),
-                           codePar.Value.ToString(),
-                           valuePar.Value.ToString(), timePar.Value.ToString());
+                        if (fromTimePar == null || toTimePar == null)
+                        {
+                            Sensor.SaveLocal(kpiCodePar.Value.ToString(),
+                               codePar.Value.ToString(),
+                               valuePar.Value.ToString(), timePar.Value.ToString());
+                        }
+                        else
+                        {
+                            Sensor.SaveLocal(kpiCodePar.Value.ToString(),
+                                  codePar.Value.ToString(),
+                                  valuePar.Value.ToString(), timePar.Value.ToString(), fromTimePar.Value.ToString(), toTimePar.Value.ToString());
+                        }
                     }
                 }
             });

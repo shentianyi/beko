@@ -64,7 +64,7 @@ namespace Brilliantech.ClearInsight.Framework
                             cv.Add("kpi_code", ApiConfig.CycleTimeKpiCode);
                             cv.Add("code", this.OffFlagCode);
                            // cv.Add("value", this.OnFlagMS.ToString());
-                             cv.Add("value", new Random().Next(30000).ToString());
+                            // cv.Add("value", new Random().Next(30000).ToString());
                             this.OffFlagCount++;
                             LogUtil.Logger.Info("[off].....code:" + this.Code + "..........value:" + this.OnFlagMS + "...........count:" + this.OffFlagCount);
 
@@ -85,7 +85,7 @@ namespace Brilliantech.ClearInsight.Framework
                 }
             }
 
-            if (this.TrigOn)
+            if (this.TrigOn || this.IsEmergency)
             {
                 //OFF-ON
                 if (this.CurrentFlag == this.OffFlag && toFlag == this.OnFlag)
@@ -102,8 +102,18 @@ namespace Brilliantech.ClearInsight.Framework
                         {
 
                             Dictionary<string, string> cv = new Dictionary<string, string>();
-                            cv.Add("kpi_code", ApiConfig.MovingTimeKpiCode);
-                            cv.Add("code", this.OnFlagCode);
+                            if (this.IsEmergency)
+                            {
+                                cv.Add("kpi_code", ApiConfig.ScramTimeKpiCode);
+                                cv.Add("code", this.Code);
+                                cv.Add("from_time", this.OffFlagTime.ToString());
+                                cv.Add("to_time", currentTime.ToString());
+                            }
+                            else if (this.TrigOn) 
+                            {
+                                cv.Add("code", this.OnFlagCode);
+                                cv.Add("kpi_code", ApiConfig.MovingTimeKpiCode);
+                            }
                             cv.Add("value", this.OffFlagMS.ToString());
                             //cv.Add("value", new Random().Next(30000).ToString());
                             this.OnFlagCount++;
@@ -145,12 +155,28 @@ namespace Brilliantech.ClearInsight.Framework
             string value = cv["value"];
             string time = DateTime.Now.ToString();
 
+            string from_time = null;
+            if (cv.Keys.Contains("from_time"))
+            {
+                from_time = cv["from_time"];
+            }
+            string to_time = null;
+            if (cv.Keys.Contains("to_time")) {
+               to_time= cv["to_time"];
+            }
+            
             AppService app = new AppService();
-
-            app.SyncPostOnOffData(kpiCode, code, value, time);
+            if (from_time == null || to_time == null)
+            {
+                app.SyncPostOnOffData(kpiCode, code, value, time);
+            }
+            else
+            {
+                app.SyncPostOnOffData(kpiCode, code, value, time, from_time, to_time);
+            }
         }
 
-        public static void SaveLocal(string kpiCode, string codes, string values, string time)
+        public static void SaveLocal(string kpiCode, string codes, string values, string time,string from_time=null,string to_time=null)
         {
             // save the data in local
             string dir = System.IO.Path.Combine("Data\\UnHandle");
@@ -164,7 +190,14 @@ namespace Brilliantech.ClearInsight.Framework
             {
                 using (StreamWriter sw = new StreamWriter(fs))
                 {
-                    sw.WriteLine(kpiCode + ";" + codes + ";" + values + ";" + time);
+                    if (from_time == null || to_time == null)
+                    {
+                        sw.WriteLine(kpiCode + ";" + codes + ";" + values + ";" + time);
+                    }
+                    else
+                    {
+                        sw.WriteLine(kpiCode + ";" + codes + ";" + values + ";" + time + ";" + from_time + ";" + to_time);
+                    }
                 }
             }
         }
