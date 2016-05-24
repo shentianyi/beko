@@ -215,7 +215,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                         }
                     }
 
-                    if (enableCB.IsChecked.Value)
+                    if (enableCB.IsChecked.Value)   
                     {
                         Sensor sensor = new Sensor()
                         {
