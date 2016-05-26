@@ -208,14 +208,18 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         {
             try
             {
-                //if (BaseConfig.FXType == "Q02U")
-                //{
-                //   // System.Threading.Thread.Sleep(50);
-                //}
+                if (BaseConfig.FXType == "Q02U")
+                {
+                    // System.Threading.Thread.Sleep(50);
+                }
 
                 byte[] data_all = new byte[sp.BytesToRead];
                 sp.Read(data_all, 0, data_all.Length);
-                //LogUtil.Logger.Info(data_all);
+                if (data_all.Length == 0) {
+                    return;
+                }
+
+               // LogUtil.Logger.Info(data_all);
                 //LogUtil.Logger.Info("-------------------------------------------");
                 if (BaseConfig.FXType == "Q02U")
                 {
@@ -237,7 +241,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                         }
                         g_index = data_all.Length;
                     }
-                    else if (check.EndsWith("0D 0A"))
+                    else if (check.EndsWith("0D 0A") && g_index>0)
                     {
                         for (int i = 0; i < data_all.Length; i++)
                         {

@@ -27,6 +27,8 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
         }
         int colCount = 10;
         int rowCount = 1;
+
+        List<string> changedIds = new List<string>();
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             for (int i = 0; i < BaseConfig.Sensors.Count; i++)
@@ -55,7 +57,7 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                 StackPanel sp = new StackPanel() { Tag = i };
 
                 string code = sensor.Code;
-                Button button = new Button() { Content = sensor.Code, Height = 50, Tag = "button_" + i, Margin = new Thickness(0, 0, 0, 0) };
+                Button button = new Button() { Content = i+".."+sensor.Code, Height = 50, Tag = "button_" + i, Margin = new Thickness(0, 0, 0, 0) };
              
                 sp.Children.Add(button);
 
@@ -151,6 +153,13 @@ namespace Brilliantech.ClearInsight.AppCenter.PLC
                                {
                                    if ((c as Button).Tag.ToString().Equals("button_" + sensor.Id))
                                    {
+                                       if (changedIds.Count > 5) {
+                                           changedIds.RemoveAt(0);
+                                       }
+                                       changedIds.Add(sensor.Id.ToString());
+
+                                       idsLabel.Content = string.Join(" / ", changedIds.ToArray());
+
                                        if (toFlag == 1)
                                        {
                                            (c as Button).Background = new SolidColorBrush(Colors.Yellow);

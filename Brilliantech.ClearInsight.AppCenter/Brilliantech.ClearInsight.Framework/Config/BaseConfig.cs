@@ -35,7 +35,9 @@ namespace Brilliantech.ClearInsight.Framework.Config
                         OffFlagCode=code,
                         TrigOff = trigerOff,
                         TrigOn = trigerOn,
-                        IsEmergency = isEmergency
+                        IsEmergency = isEmergency,
+                        MinOffUpMS=int.Parse(config.Get("MinFilterMillSecond")),
+                        MinOnUpMS = int.Parse(config.Get("MinOnFilterMillSecond"))
                     };
 
                     sensors.Add(sensor);

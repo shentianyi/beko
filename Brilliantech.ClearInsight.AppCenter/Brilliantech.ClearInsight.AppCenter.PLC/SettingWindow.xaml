@@ -31,5 +31,6 @@
         <StackPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,20,0"></StackPanel>
         <Label Content="Restart The Application after Save!" Grid.Row="1" Height="28" HorizontalAlignment="Left" Margin="456,18,0,0" Name="label1" VerticalAlignment="Top" Foreground="#FFDB4343" FontWeight="Bold" />
         <Button Content="Save!" Height="46" Name="SaveBtn" Width="91" Click="SaveBtn_Click" Margin="340,0,247,0" Grid.Row="1" FontWeight="Bold" />
+        <Label Content="idsLabel" Grid.Row="1" Height="28" HorizontalAlignment="Left" Margin="12,6,0,0" Name="idsLabel" VerticalAlignment="Top" Width="318" />
     </Grid> 
 </Window>

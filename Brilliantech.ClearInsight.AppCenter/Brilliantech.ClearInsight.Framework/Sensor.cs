@@ -25,7 +25,7 @@ namespace Brilliantech.ClearInsight.Framework
             this.TrigOff = true;
             this.CurrentFlag = 0;
             this.MaxFlashMS = 0;
-            this.MinUpMS = 0;
+            this.MinOffUpMS = 0;
 
             this.OnFlagMS = 0;
             this.OnFlagTime = DateTime.Now;
@@ -57,13 +57,13 @@ namespace Brilliantech.ClearInsight.Framework
                     {
                         this.OnFlagMS = flashTime;
 
-                        if (this.OnFlagMS >= this.MinUpMS && this.Code != "X")
+                        if (this.OnFlagMS >= this.MinOffUpMS && this.Code != "X")
                         {
                             // trigger on-off up
                             Dictionary<string, string> cv = new Dictionary<string, string>();
                             cv.Add("kpi_code", ApiConfig.CycleTimeKpiCode);
                             cv.Add("code", this.OffFlagCode);
-                           // cv.Add("value", this.OnFlagMS.ToString());
+                            cv.Add("value", this.OnFlagMS.ToString());
                             // cv.Add("value", new Random().Next(30000).ToString());
                             this.OffFlagCount++;
                             LogUtil.Logger.Info("[off].....code:" + this.Code + "..........value:" + this.OnFlagMS + "...........count:" + this.OffFlagCount);
@@ -98,7 +98,7 @@ namespace Brilliantech.ClearInsight.Framework
                     else
                     {
                         this.OffFlagMS = flashTime;
-                        if (this.OffFlagMS >= this.MinUpMS && this.Code != "X")
+                        if (this.OffFlagMS >= this.MinOnUpMS && this.Code != "X")
                         {
 
                             Dictionary<string, string> cv = new Dictionary<string, string>();
@@ -267,9 +267,15 @@ namespace Brilliantech.ClearInsight.Framework
         /// </summary>
         public int MaxFlashMS { get; set; }
         /// <summary>
-        /// 最小触发事件时间
+        /// 最小触发关事件时间
         /// </summary>
-        public int MinUpMS { get; set; }
+        public int MinOffUpMS { get; set; }
+
+        /// <summary>
+        /// 最小触发开事件时间
+        /// </summary>
+        public int MinOnUpMS { get; set; }
+
 
         /// <summary>
         /// 是否是紧急

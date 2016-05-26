@@ -16,14 +16,18 @@ namespace TEST.Console1
         static void Main(string[] args)
         {
             string s = "";
-            for (var i = 0; i < 16; i++) {
-                if (i < 10)
-                {
-                    s += (i + "#" + "1N-C0" + (i + 1) + ",true,true,false;");
-                }
-                else {
-                    s += (i + "#" + "1N-C" + (i + 1) + ",true,true,false;");
-                }
+            for (var i = 0; i < 992; i++) {
+               
+                    s += (i + "#" + "X" + ",false,false,false$");
+                
+
+                //if (i < 10)
+                //{
+                //    s += (i + "#" + "1N-C0" + (i + 1) + ",true,true,false$");
+                //}
+                //else {
+                //    s += (i + "#" + "1N-C" + (i + 1) + ",true,true,false$");
+                //}
             }
             Console.WriteLine(s);
            // DateTime st = DateTime.Now;
